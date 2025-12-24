@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -32,21 +32,25 @@
         .stepper-btn:active { transform: scale(0.9); }
         .stepper-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
-        .tab-btn {
-            position: relative;
-            padding: 1rem 0.5rem;
-            font-weight: 600;
-            color: #64748b;
-            transition: all 0.2s;
-            border-bottom: 2px solid transparent;
+        /* Sidebar Transition */
+        #navSidebar {
+            transition: transform 0.3s ease-in-out;
+            transform: translateX(-100%);
         }
-        .tab-btn:hover { color: #1e3a8a; }
-        .tab-btn.active {
-            color: #2563eb;
-            border-bottom-color: #2563eb;
+        #navSidebar.active {
+            transform: translateX(0);
         }
 
-        /* Sub-tab styling */
+        #overlay {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease-in-out;
+        }
+        #overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
         .sub-tab-btn {
             padding: 0.5rem 1rem;
             font-size: 0.75rem;
@@ -61,112 +65,69 @@
             color: #1e293b;
             border-bottom-color: #1e293b;
         }
-
-        #glossarySidebar {
-            transition: transform 0.3s ease-in-out;
-            transform: translateX(100%);
-        }
-        #glossarySidebar.active {
-            transform: translateX(0);
-        }
-        #sidebarOverlay {
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease-in-out;
-        }
-        #sidebarOverlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        @media (max-width: 640px) {
-            .tab-nav-container {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                background: white;
-                z-index: 50;
-                border-top: 1px solid #e2e8f0;
-                padding-bottom: env(safe-area-inset-bottom);
-            }
-            .page-content { padding-bottom: 5rem; }
-        }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen font-sans text-slate-900 overflow-x-hidden">
 
-    <!-- Glossary Side Menu -->
-    <div id="sidebarOverlay" onclick="toggleGlossary(false)" class="fixed inset-0 bg-slate-900/50 z-[60]"></div>
-    <aside id="glossarySidebar" class="fixed top-0 right-0 h-full w-full max-w-sm bg-white z-[70] shadow-2xl p-6 overflow-y-auto">
+    <!-- Global Overlay -->
+    <div id="overlay" onclick="closeAllMenus()" class="fixed inset-0 bg-slate-900/50 z-[60]"></div>
+
+    <!-- Hidden File Input for CSV Import -->
+    <input type="file" id="csvImportInput" accept=".csv" class="hidden" onchange="handleCsvImport(event)">
+
+    <!-- Navigation Sidebar (Left) -->
+    <aside id="navSidebar" class="fixed top-0 left-0 h-full w-64 bg-white z-[70] shadow-2xl p-6">
         <div class="flex items-center justify-between mb-8">
-            <h2 class="text-lg font-black text-blue-900 tracking-tight">STAT GLOSSARY</h2>
-            <button onclick="toggleGlossary(false)" class="p-2 hover:bg-slate-100 rounded-full transition">
+            <h2 class="text-lg font-black text-blue-900 tracking-tight">MENU</h2>
+            <button onclick="toggleNav(false)" class="p-2 hover:bg-slate-100 rounded-full transition">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
         </div>
-        <div class="space-y-4">
-            <div class="bg-slate-50 p-4 rounded-xl">
-                <strong class="block text-blue-600 text-xs font-black uppercase mb-1">AB: At Bats</strong>
-                <p class="text-sm text-slate-600">The number of times you completed a turn at bat, excluding walks and HBP.</p>
-            </div>
-            <div class="bg-slate-50 p-4 rounded-xl">
-                <strong class="block text-blue-600 text-xs font-black uppercase mb-1">1B: Singles</strong>
-                <p class="text-sm text-slate-600">A base hit where the batter reaches first base safely.</p>
-            </div>
-            <div class="bg-slate-50 p-4 rounded-xl">
-                <strong class="block text-blue-600 text-xs font-black uppercase mb-1">AVG: Batting Average</strong>
-                <p class="text-sm text-slate-600">Total Hits divided by At Bats.</p>
-            </div>
-            <div class="bg-slate-50 p-4 rounded-xl">
-                <strong class="block text-blue-600 text-xs font-black uppercase mb-1">OBP: On-Base Percentage</strong>
-                <p class="text-sm text-slate-600">(H + BB + HBP) divided by (AB + BB + HBP).</p>
-            </div>
-            <div class="bg-slate-50 p-4 rounded-xl">
-                <strong class="block text-blue-600 text-xs font-black uppercase mb-1">SLG: Slugging Percentage</strong>
-                <p class="text-sm text-slate-600">Total Bases (1B + 2B*2 + 3B*3 + HR*4) divided by At Bats.</p>
-            </div>
-        </div>
+        <nav class="flex flex-col gap-2">
+            <button onclick="showPage('dashboard')" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition text-left">
+                <span>Dashboard</span>
+            </button>
+            <button onclick="showPage('addData')" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition text-left">
+                <span>Add Game</span>
+            </button>
+            <button onclick="showPage('glossary')" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition text-left">
+                <span>Glossary</span>
+            </button>
+            <button onclick="showPage('dataManagement')" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition text-left">
+                <span>Data Management</span>
+            </button>
+        </nav>
     </aside>
 
-    <div class="max-w-6xl mx-auto page-content">
+    <div class="max-w-6xl mx-auto">
         <header class="bg-white border-b sticky top-0 z-40 px-4 md:px-8">
-            <div class="flex flex-col md:flex-row md:items-center justify-between py-4 gap-4">
-                <div class="flex items-center justify-between">
-                    <h1 class="text-xl font-black text-blue-900 tracking-tight">BASEBALL STATS</h1>
-                    <div class="flex gap-2 md:hidden">
-                        <button onclick="toggleGlossary(true)" class="text-blue-600 text-xs font-bold px-2 py-1 bg-blue-50 rounded">Glossary</button>
-                    </div>
-                </div>
-                
-                <nav class="tab-nav-container flex justify-around md:justify-start md:gap-8">
-                    <button onclick="showPage('dashboard')" class="tab-btn active" id="nav-dashboard">Dashboard</button>
-                    <button onclick="showPage('addData')" class="tab-btn" id="nav-addData">Add Data</button>
-                </nav>
-
-                <div class="hidden md:flex items-center gap-3">
-                    <button onclick="toggleGlossary(true)" class="text-slate-500 hover:text-blue-600 px-3 py-1.5 text-xs font-bold transition mr-2">GLOSSARY</button>
-                    <button id="exportCsvBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-full text-xs font-bold transition">EXPORT CSV</button>
-                    <button onclick="clearAllData()" class="border border-red-200 text-red-600 hover:bg-red-50 px-4 py-1.5 rounded-full text-xs font-bold transition">CLEAR ALL</button>
+            <div class="flex items-center justify-between py-4">
+                <div class="flex items-center gap-4">
+                    <!-- Hamburger Button -->
+                    <button onclick="toggleNav(true)" class="p-2 hover:bg-slate-100 rounded-lg transition text-slate-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    </button>
+                    <h1 class="text-xl font-black text-blue-900 tracking-tight hidden sm:block">BASEBALL STATS</h1>
                 </div>
             </div>
         </header>
 
         <main class="p-4 md:p-8">
-            <h2 id="pageTitle" class="text-2xl font-bold mb-6 hidden md:block text-slate-800">Dashboard</h2>
+            <h2 id="pageTitle" class="text-2xl font-bold mb-6 text-slate-800">Dashboard</h2>
 
+            <!-- DASHBOARD PAGE -->
             <div id="dashboardPage" class="page-view">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                     <div class="stats-card border-t-4 border-blue-500">
-                        <p class="text-slate-400 text-[10px] uppercase font-black tracking-wider">Batting AVG</p>
+                        <p class="text-slate-400 text-[10px] uppercase font-black tracking-wider">AVG</p>
                         <p id="avgDisplay" class="text-3xl font-black text-slate-800">.000</p>
                     </div>
                     <div class="stats-card border-t-4 border-red-500">
-                        <p class="text-slate-400 text-[10px] uppercase font-black tracking-wider">On-Base %</p>
+                        <p class="text-slate-400 text-[10px] uppercase font-black tracking-wider">OBP</p>
                         <p id="obpDisplay" class="text-3xl font-black text-slate-800">.000</p>
                     </div>
                     <div class="stats-card border-t-4 border-yellow-500">
-                        <p class="text-slate-400 text-[10px] uppercase font-black tracking-wider">Slugging %</p>
+                        <p class="text-slate-400 text-[10px] uppercase font-black tracking-wider">SLG</p>
                         <p id="slgDisplay" class="text-3xl font-black text-slate-800">.000</p>
                     </div>
                     <div class="stats-card border-t-4 border-green-500">
@@ -175,9 +136,10 @@
                     </div>
                 </div>
 
-                <!-- Dashboard Tab Group -->
-                <div class="mb-6 border-b border-slate-200 flex gap-4">
+                <div class="mb-6 border-b border-slate-200 flex gap-1 sm:gap-4 overflow-x-auto no-scrollbar">
                     <button onclick="switchDashTab('performance')" id="dash-tab-performance" class="sub-tab-btn active">Performance</button>
+                    <button onclick="switchDashTab('metrics')" id="dash-tab-metrics" class="sub-tab-btn">Metric Profile</button>
+                    <button onclick="switchDashTab('distribution')" id="dash-tab-distribution" class="sub-tab-btn">Hit Distribution</button>
                     <button onclick="switchDashTab('log')" id="dash-tab-log" class="sub-tab-btn">Game Log</button>
                 </div>
 
@@ -188,9 +150,33 @@
                     </div>
                 </div>
 
+                <div id="dash-section-metrics" class="dash-section hidden">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="stats-card">
+                            <h3 class="text-sm font-bold mb-6 text-slate-500 uppercase tracking-widest">Plate Discipline</h3>
+                            <div class="h-64 flex items-center justify-center text-slate-400 text-sm italic">
+                                Total BB: <span id="metricBB" class="font-bold text-slate-800 ml-1">0</span> | 
+                                Total SO: <span id="metricSO" class="font-bold text-slate-800 ml-1">0</span>
+                            </div>
+                        </div>
+                        <div class="stats-card">
+                            <h3 class="text-sm font-bold mb-6 text-slate-500 uppercase tracking-widest">Power Metrics</h3>
+                            <div class="h-64 flex items-center justify-center text-slate-400 text-sm italic">
+                                ISO: <span id="metricISO" class="font-bold text-slate-800 ml-1">.000</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="dash-section-distribution" class="dash-section hidden">
+                    <div class="stats-card mb-8">
+                        <h3 class="text-sm font-bold mb-6 text-slate-500 uppercase tracking-widest">Hit Type Breakdown</h3>
+                        <div class="h-64"><canvas id="distributionChart"></canvas></div>
+                    </div>
+                </div>
+
                 <div id="dash-section-log" class="dash-section hidden">
                     <div class="stats-card overflow-x-auto mb-8">
-                        <h3 class="text-sm font-bold mb-6 text-slate-500 uppercase tracking-widest">Game Log</h3>
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-slate-100">
                                 <thead>
@@ -219,13 +205,69 @@
                 </div>
             </div>
 
+            <!-- GLOSSARY PAGE -->
+            <div id="glossaryPage" class="page-view hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="stats-card">
+                        <strong class="block text-blue-600 text-xs font-black uppercase mb-1">AB: At Bats</strong>
+                        <p class="text-sm text-slate-600 leading-relaxed">Total turns at bat, excluding walks (BB), hit by pitches (HBP), sacrifices, and catcher's interference.</p>
+                    </div>
+                    <div class="stats-card">
+                        <strong class="block text-blue-600 text-xs font-black uppercase mb-1">AVG: Batting Average</strong>
+                        <p class="text-sm text-slate-600 leading-relaxed">A measure of a batter's ability to get hits. Formula: <code>Total Hits (1B+2B+3B+HR) / AB</code>.</p>
+                    </div>
+                    <div class="stats-card">
+                        <strong class="block text-blue-600 text-xs font-black uppercase mb-1">OBP: On-Base Percentage</strong>
+                        <p class="text-sm text-slate-600 leading-relaxed">How often a batter reaches base. Formula: <code>(H + BB + HBP) / (AB + BB + HBP + SF)</code>.</p>
+                    </div>
+                    <div class="stats-card">
+                        <strong class="block text-blue-600 text-xs font-black uppercase mb-1">SLG: Slugging Percentage</strong>
+                        <p class="text-sm text-slate-600 leading-relaxed">Total bases per at-bat. Formula: <code>(1B + 2*2B + 3*3B + 4*HR) / AB</code>.</p>
+                    </div>
+                    <div class="stats-card">
+                        <strong class="block text-blue-600 text-xs font-black uppercase mb-1">OPS: On-Base Plus Slugging</strong>
+                        <p class="text-sm text-slate-600 leading-relaxed">The combined measure of a player's ability to get on base and hit for power. Formula: <code>OBP + SLG</code>.</p>
+                    </div>
+                    <div class="stats-card">
+                        <strong class="block text-blue-600 text-xs font-black uppercase mb-1">RBI: Runs Batted In</strong>
+                        <p class="text-sm text-slate-600 leading-relaxed">The number of runs that score safely as a result of the batter's action (hit, walk with bases loaded, etc).</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DATA MANAGEMENT PAGE -->
+            <div id="dataManagementPage" class="page-view hidden max-w-2xl mx-auto space-y-6">
+                <div class="stats-card">
+                    <h3 class="font-bold text-slate-800 mb-2">Import & Export</h3>
+                    <p class="text-sm text-slate-500 mb-6">Backup your game history or import data from a spreadsheet.</p>
+                    <div class="flex flex-wrap gap-4">
+                        <button onclick="document.getElementById('csvImportInput').click();" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl font-bold transition flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                            Import CSV
+                        </button>
+                        <button onclick="exportData()" class="bg-slate-800 hover:bg-slate-900 text-white px-6 py-2.5 rounded-xl font-bold transition flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            Export CSV
+                        </button>
+                    </div>
+                </div>
+
+                <div class="stats-card border-l-4 border-red-500">
+                    <h3 class="font-bold text-red-600 mb-2">Danger Zone</h3>
+                    <p class="text-sm text-slate-500 mb-6">Permanently delete all games and reset your dashboard statistics.</p>
+                    <button onclick="clearAllData()" class="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 px-6 py-2.5 rounded-xl font-bold transition">
+                        Clear All Data
+                    </button>
+                </div>
+            </div>
+
+            <!-- ADD DATA PAGE -->
             <div id="addDataPage" class="page-view hidden max-w-lg mx-auto space-y-8">
                 <div class="stats-card min-h-[500px] flex flex-col">
                     <div class="flex justify-between items-start mb-6">
-                        <h2 id="formHeader" class="text-xl font-bold leading-tight">Manual Entry</h2>
+                        <h2 id="formHeader" class="text-xl font-bold">Manual Entry</h2>
                         <span id="stepIndicator" class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded">Step 1 of 13</span>
                     </div>
-                    
                     <form id="statsForm" class="flex-grow flex flex-col justify-between">
                         <div id="step1" class="step-content space-y-4">
                             <div>
@@ -239,52 +281,32 @@
                         </div>
 
                         <div id="stepperContainer">
-                            <div id="step2" class="step-content hidden space-y-6 text-center">
-                                <p class="text-slate-500 text-sm font-medium">How many At Bats (AB)?</p>
-                                <div class="flex items-center justify-center gap-6">
-                                    <button type="button" onclick="stepVal('ab', -1)" class="stepper-btn">-</button>
-                                    <input type="number" id="ab" value="0" min="0" class="text-5xl font-black w-24 text-center outline-none bg-transparent">
-                                    <button type="button" onclick="stepVal('ab', 1)" class="stepper-btn">+</button>
-                                </div>
-                            </div>
-                            <div id="step3" class="step-content hidden space-y-6 text-center">
-                                <p class="text-slate-500 text-sm font-medium">How many Singles (1B)?</p>
-                                <div class="flex items-center justify-center gap-6">
-                                    <button type="button" onclick="stepVal('s', -1)" class="stepper-btn">-</button>
-                                    <input type="number" id="s" value="0" min="0" class="text-5xl font-black w-20 text-center outline-none bg-transparent">
-                                    <button type="button" onclick="stepVal('s', 1)" class="stepper-btn">+</button>
-                                </div>
-                            </div>
-                            <div id="step4" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">How many doubles (2B)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('d', -1)" class="stepper-btn">-</button><input type="number" id="d" value="0" min="0" class="text-5xl font-black w-20 text-center outline-none bg-transparent"><button type="button" onclick="stepVal('d', 1)" class="stepper-btn">+</button></div></div>
-                            <div id="step5" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">How many triples (3B)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('t', -1)" class="stepper-btn">-</button><input type="number" id="t" value="0" min="0" class="text-5xl font-black w-20 text-center outline-none bg-transparent"><button type="button" onclick="stepVal('t', 1)" class="stepper-btn">+</button></div></div>
-                            <div id="step6" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">How many home runs (HR)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('hr', -1)" class="stepper-btn">-</button><input type="number" id="hr" value="0" min="0" class="text-5xl font-black w-20 text-center outline-none bg-transparent"><button type="button" onclick="stepVal('hr', 1)" class="stepper-btn">+</button></div></div>
-                            <div id="step7" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">How many strikeouts (SO)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('so', -1)" class="stepper-btn">-</button><input type="number" id="so" value="0" min="0" class="text-5xl font-black w-20 text-center outline-none bg-transparent"><button type="button" onclick="stepVal('so', 1)" class="stepper-btn">+</button></div></div>
-                            <div id="step8" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">How many walks (BB)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('bb', -1)" class="stepper-btn">-</button><input type="number" id="bb" value="0" min="0" class="text-5xl font-black w-20 text-center outline-none bg-transparent"><button type="button" onclick="stepVal('bb', 1)" class="stepper-btn">+</button></div></div>
-                            <div id="step9" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">How many hit by pitch (HBP)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('hbp', -1)" class="stepper-btn">-</button><input type="number" id="hbp" value="0" min="0" class="text-5xl font-black w-20 text-center outline-none bg-transparent"><button type="button" onclick="stepVal('hbp', 1)" class="stepper-btn">+</button></div></div>
-                            <div id="step10" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">How many runs (R)?</p><div class="flex items-center justify-center gap-6"><button type="button" id="rMinus" onclick="stepVal('r', -1)" class="stepper-btn">-</button><input type="number" id="r" value="0" min="0" class="text-5xl font-black w-20 text-center outline-none bg-transparent"><button type="button" id="rPlus" onclick="stepVal('r', 1)" class="stepper-btn">+</button></div></div>
-                            <div id="step11" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">How many RBIs?</p><div class="flex items-center justify-center gap-6"><button type="button" id="rbiMinus" onclick="stepVal('rbi', -1)" class="stepper-btn">-</button><input type="number" id="rbi" value="0" min="0" class="text-5xl font-black w-20 text-center outline-none bg-transparent"><button type="button" id="rbiPlus" onclick="stepVal('rbi', 1)" class="stepper-btn">+</button></div></div>
-                            <div id="step12" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">How many stolen bases (SB)?</p><div class="flex items-center justify-center gap-6"><button type="button" id="sbMinus" onclick="stepVal('sb', -1)" class="stepper-btn">-</button><input type="number" id="sb" value="0" min="0" class="text-5xl font-black w-20 text-center outline-none bg-transparent"><button type="button" id="sbPlus" onclick="stepVal('sb', 1)" class="stepper-btn">+</button></div></div>
+                            <div id="step2" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">At Bats (AB)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('ab', -1)" class="stepper-btn">-</button><input type="number" id="ab" value="0" min="0" class="text-5xl font-black w-24 text-center outline-none bg-transparent"><button type="button" onclick="stepVal('ab', 1)" class="stepper-btn">+</button></div></div>
+                            <div id="step3" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">Singles (1B)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('s', -1)" class="stepper-btn">-</button><input type="number" id="s" value="0" min="0" class="text-5xl font-black w-20 text-center outline-none bg-transparent"><button type="button" onclick="stepVal('s', 1)" class="stepper-btn">+</button></div></div>
+                            <div id="step4" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">Doubles (2B)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('d', -1)" class="stepper-btn">-</button><input type="number" id="d" value="0" min="0" class="text-5xl font-black w-20 text-center outline-none bg-transparent"><button type="button" onclick="stepVal('d', 1)" class="stepper-btn">+</button></div></div>
+                            <div id="step5" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">Triples (3B)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('t', -1)" class="stepper-btn">-</button><input type="number" id="t" value="0" min="0" class="text-5xl font-black w-20 text-center outline-none bg-transparent"><button type="button" onclick="stepVal('t', 1)" class="stepper-btn">+</button></div></div>
+                            <div id="step6" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">Home Runs (HR)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('hr', -1)" class="stepper-btn">-</button><input type="number" id="hr" value="0" min="0" class="text-5xl font-black w-20 text-center outline-none bg-transparent"><button type="button" onclick="stepVal('hr', 1)" class="stepper-btn">+</button></div></div>
+                            <div id="step7" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">Strikeouts (SO)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('so', -1)" class="stepper-btn">-</button><input type="number" id="so" value="0" min="0" class="text-5xl font-black w-20 text-center outline-none bg-transparent"><button type="button" onclick="stepVal('so', 1)" class="stepper-btn">+</button></div></div>
+                            <div id="step8" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">Walks (BB)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('bb', -1)" class="stepper-btn">-</button><input type="number" id="bb" value="0" min="0" class="text-5xl font-black w-20 text-center outline-none bg-transparent"><button type="button" onclick="stepVal('bb', 1)" class="stepper-btn">+</button></div></div>
+                            <div id="step9" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">Hit by Pitch (HBP)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('hbp', -1)" class="stepper-btn">-</button><input type="number" id="hbp" value="0" min="0" class="text-5xl font-black w-20 text-center outline-none bg-transparent"><button type="button" onclick="stepVal('hbp', 1)" class="stepper-btn">+</button></div></div>
+                            <div id="step10" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">Runs (R)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('r', -1)" class="stepper-btn">-</button><input type="number" id="r" value="0" min="0" class="text-5xl font-black w-20 text-center outline-none bg-transparent"><button type="button" onclick="stepVal('r', 1)" class="stepper-btn">+</button></div></div>
+                            <div id="step11" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">RBIs?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('rbi', -1)" class="stepper-btn">-</button><input type="number" id="rbi" value="0" min="0" class="text-5xl font-black w-20 text-center outline-none bg-transparent"><button type="button" onclick="stepVal('rbi', 1)" class="stepper-btn">+</button></div></div>
+                            <div id="step12" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">Stolen Bases (SB)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('sb', -1)" class="stepper-btn">-</button><input type="number" id="sb" value="0" min="0" class="text-5xl font-black w-20 text-center outline-none bg-transparent"><button type="button" onclick="stepVal('sb', 1)" class="stepper-btn">+</button></div></div>
                         </div>
 
                         <div id="step13" class="step-content hidden space-y-4">
                             <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
-                                <h3 class="text-[10px] font-black text-blue-800 uppercase mb-3 text-center tracking-widest">Final Review</h3>
+                                <h3 class="text-[10px] font-black text-blue-800 uppercase mb-3 text-center">Final Review</h3>
                                 <div id="previewCalc" class="text-xs text-blue-900 space-y-2"></div>
                             </div>
                         </div>
 
                         <div class="flex gap-2 pt-6">
-                            <button type="button" id="backBtn" onclick="prevStep()" class="hidden w-1/3 bg-slate-100 text-slate-600 font-bold py-3 rounded-xl hover:bg-slate-200 transition">Back</button>
-                            <button type="button" id="nextBtn" onclick="handleNext()" class="flex-grow bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-100 transition">Next</button>
-                            <button type="submit" id="submitBtn" class="hidden flex-grow bg-green-600 text-white font-bold py-3 rounded-xl shadow-lg shadow-green-100 hover:bg-green-700 transition">Save Game</button>
+                            <button type="button" id="backBtn" onclick="prevStep()" class="hidden w-1/3 bg-slate-100 text-slate-600 font-bold py-3 rounded-xl text-xs sm:text-base">Back</button>
+                            <button type="button" id="nextBtn" onclick="handleNext()" class="flex-grow bg-blue-600 text-white font-bold py-3 rounded-xl shadow-lg text-xs sm:text-base">Next</button>
+                            <button type="submit" id="submitBtn" class="hidden flex-grow bg-green-600 text-white font-bold py-3 rounded-xl shadow-lg text-xs sm:text-base">Save Game</button>
                         </div>
                     </form>
-                </div>
-
-                <div class="stats-card text-center py-8">
-                    <h3 class="text-sm font-black text-slate-400 uppercase tracking-widest mb-6">Bulk Upload</h3>
-                    <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="handleFileUpload(event)">
-                    <button onclick="document.getElementById('csvFileInput').click()" class="border border-blue-200 text-blue-600 px-6 py-2 rounded-lg text-sm font-bold hover:bg-blue-50 transition">Choose File</button>
                 </div>
             </div>
         </main>
@@ -293,21 +315,33 @@
     <script>
         let gameData = [];
         let trendChart;
+        let distributionChart;
         let currentFormStep = 1;
         const totalSteps = 13;
 
-        function toggleGlossary(open) {
-            document.getElementById('glossarySidebar').classList.toggle('active', open);
-            document.getElementById('sidebarOverlay').classList.toggle('active', open);
+        function toggleNav(open) {
+            document.getElementById('navSidebar').classList.toggle('active', open);
+            document.getElementById('overlay').classList.toggle('active', open);
             document.body.style.overflow = open ? 'hidden' : '';
+        }
+
+        function closeAllMenus() {
+            toggleNav(false);
         }
 
         function showPage(pageId) {
             document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
             document.getElementById(pageId + 'Page').classList.remove('hidden');
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('nav-' + pageId).classList.add('active');
-            document.getElementById('pageTitle').textContent = pageId === 'dashboard' ? "Dashboard" : "Add Game Data";
+            
+            const titles = {
+                'dashboard': 'Dashboard',
+                'addData': 'Add Game',
+                'glossary': 'Glossary',
+                'dataManagement': 'Data Management'
+            };
+            document.getElementById('pageTitle').textContent = titles[pageId] || "App";
+            
+            toggleNav(false);
             window.scrollTo(0,0);
         }
 
@@ -319,78 +353,37 @@
         }
 
         function deleteGameEntry(id) {
-            if (confirm("Remove this game entry?")) {
+            if (confirm("Remove this game?")) {
                 gameData = gameData.filter(g => String(g.id) !== String(id));
                 calculate();
             }
         }
 
         function clearAllData() {
-            if (confirm("Wipe all recorded games?")) {
+            if (confirm("Wipe all data? This cannot be undone.")) {
                 gameData = [];
                 calculate();
+                localStorage.removeItem('bb_stats_v10');
+                showPage('dashboard');
             }
         }
 
         function getLimits() {
             const getVal = (id) => parseInt(document.getElementById(id)?.value) || 0;
-            const ab = getVal('ab'), s = getVal('s'), d = getVal('d'), t = getVal('t'), hr = getVal('hr'), bb = getVal('bb'), hbp = getVal('hbp'), so = getVal('so');
-            const hits = s + d + t + hr;
-            return { 
-                minAb: hits + so,
-                minR: hr, 
-                maxR: hits + bb + hbp, 
-                minRbi: hr, 
-                maxRbi: (hits * 3) + bb + hbp + hr, 
-                maxSb: ((s + bb + hbp) * 3) + (d * 2) + (t * 1) 
-            };
+            const s = getVal('s'), d = getVal('d'), t = getVal('t'), hr = getVal('hr'), so = getVal('so');
+            return { minAb: (s + d + t + hr + so) };
         }
 
         function stepVal(id, delta) {
             const el = document.getElementById(id);
             if (!el) return;
-            let val = parseInt(el.value) || 0;
             const limits = getLimits();
-            let newVal = val + delta;
+            let newVal = (parseInt(el.value) || 0) + delta;
             
             if (id === 'ab') newVal = Math.max(limits.minAb, newVal);
-            else if (id === 'r') newVal = Math.min(Math.max(limits.minR, newVal), limits.maxR);
-            else if (id === 'rbi') newVal = Math.min(Math.max(limits.minRbi, newVal), limits.maxRbi);
-            else if (id === 'sb') newVal = Math.min(Math.max(0, newVal), limits.maxSb);
             else newVal = Math.max(0, newVal);
             
             el.value = newVal;
-            updateStepConstraints();
-            if (currentFormStep === totalSteps) updatePreview();
-        }
-
-        function updateStepConstraints() {
-            const limits = getLimits();
-            const enforceLimits = (id, min, max) => {
-                const el = document.getElementById(id);
-                if (!el) return;
-                let val = parseInt(el.value) || 0;
-                if (val < min) el.value = min;
-                if (max !== undefined && val > max) el.value = max;
-            };
-            enforceLimits('ab', limits.minAb);
-            enforceLimits('r', limits.minR, limits.maxR);
-            enforceLimits('rbi', limits.minRbi, limits.maxRbi);
-            enforceLimits('sb', 0, limits.maxSb);
-        }
-
-        function updateFormUI() {
-            const header = document.getElementById('formHeader');
-            const indicator = document.getElementById('stepIndicator');
-            const dateVal = document.getElementById('date').value;
-            const oppVal = document.getElementById('opponent').value.trim();
-            header.textContent = currentFormStep === 1 ? "Manual Entry" : `Game vs ${oppVal || 'Opponent'} (${dateVal})`;
-            indicator.textContent = `Step ${currentFormStep} of ${totalSteps}`;
-            document.querySelectorAll('.step-content').forEach((el, idx) => el.classList.toggle('hidden', (idx + 1) !== currentFormStep));
-            document.getElementById('backBtn').classList.toggle('hidden', currentFormStep === 1);
-            document.getElementById('nextBtn').classList.toggle('hidden', currentFormStep === totalSteps);
-            document.getElementById('submitBtn').classList.toggle('hidden', currentFormStep !== totalSteps);
-            updateStepConstraints();
             if (currentFormStep === totalSteps) updatePreview();
         }
 
@@ -401,61 +394,72 @@
 
         function prevStep() { if (currentFormStep > 1) { currentFormStep--; updateFormUI(); } }
 
+        function updateFormUI() {
+            const indicator = document.getElementById('stepIndicator');
+            indicator.textContent = `Step ${currentFormStep} of ${totalSteps}`;
+            document.querySelectorAll('.step-content').forEach((el, idx) => el.classList.toggle('hidden', (idx + 1) !== currentFormStep));
+            document.getElementById('backBtn').classList.toggle('hidden', currentFormStep === 1);
+            document.getElementById('nextBtn').classList.toggle('hidden', currentFormStep === totalSteps);
+            document.getElementById('submitBtn').classList.toggle('hidden', currentFormStep !== totalSteps);
+            if (currentFormStep === totalSteps) updatePreview();
+        }
+
         function getStatsFromForm() {
             const getVal = (id) => parseInt(document.getElementById(id)?.value) || 0;
-            const ab = getVal('ab'), s = getVal('s'), d = getVal('d'), t = getVal('t'), hr = getVal('hr');
-            const so = getVal('so'), bb = getVal('bb'), hbp = getVal('hbp');
-            const r = getVal('r'), rbi = getVal('rbi'), sb = getVal('sb');
-            const hits = s + d + t + hr;
-            return { ab, s, d, t, hr, hits, so, bb, hbp, r, rbi, sb };
+            const s = getVal('s'), d = getVal('d'), t = getVal('t'), hr = getVal('hr');
+            return { 
+                ab: getVal('ab'), s, d, t, hr, 
+                hits: (s+d+t+hr), so: getVal('so'), 
+                bb: getVal('bb'), hbp: getVal('hbp'), 
+                r: getVal('r'), rbi: getVal('rbi'), sb: getVal('sb') 
+            };
         }
 
         function updatePreview() {
             const s = getStatsFromForm();
             const avg = s.ab > 0 ? (s.hits / s.ab).toFixed(3).replace(/^0/, '') : ".000";
             document.getElementById('previewCalc').innerHTML = `
-                <div class="flex justify-between border-b pb-1"><span>At Bats (AB)</span> <strong>${s.ab}</strong></div>
-                <div class="flex justify-between border-b pb-1"><span>Singles (1B)</span> <strong>${s.s}</strong></div>
-                <div class="flex justify-between border-b pb-1"><span>Doubles (2B)</span> <strong>${s.d}</strong></div>
-                <div class="flex justify-between border-b pb-1"><span>Triples (3B)</span> <strong>${s.t}</strong></div>
-                <div class="flex justify-between border-b pb-1"><span>Home Runs (HR)</span> <strong>${s.hr}</strong></div>
-                <div class="flex justify-between border-b pb-1"><span>Strikeouts (SO)</span> <strong>${s.so}</strong></div>
-                <div class="flex justify-between border-b pb-1"><span>Walks (BB)</span> <strong>${s.bb}</strong></div>
-                <div class="flex justify-between border-b pb-1"><span>Hit By Pitch (HBP)</span> <strong>${s.hbp}</strong></div>
-                <div class="flex justify-between border-b pb-1"><span>Runs (R)</span> <strong>${s.r}</strong></div>
-                <div class="flex justify-between border-b pb-1"><span>RBIs</span> <strong>${s.rbi}</strong></div>
-                <div class="flex justify-between border-b pb-1"><span>Stolen Bases (SB)</span> <strong>${s.sb}</strong></div>
-                <div class="flex justify-between font-black text-blue-600 pt-2"><span>Game AVG</span> <strong>${avg}</strong></div>
+                <div class="flex justify-between border-b pb-1"><span>AB</span> <strong>${s.ab}</strong></div>
+                <div class="flex justify-between border-b pb-1"><span>Hits</span> <strong>${s.hits}</strong></div>
+                <div class="flex justify-between font-black text-blue-600 pt-2"><span>AVG</span> <strong>${avg}</strong></div>
             `;
         }
 
         function calculate() {
+            const format = (v) => v.toFixed(3).replace(/^0/, '');
             if (!gameData.length) {
-                ['avgDisplay','obpDisplay','slgDisplay','opsDisplay'].forEach(id => {
-                    const el = document.getElementById(id);
-                    if (el) el.textContent = '.000';
-                });
-                if (trendChart) updateChart([]); 
-                renderTable(); 
-                localStorage.setItem('bb_stats_v9', JSON.stringify([]));
-                return;
+                ['avgDisplay','obpDisplay','slgDisplay','opsDisplay'].forEach(id => document.getElementById(id).textContent = '.000');
+                document.getElementById('metricBB').textContent = '0';
+                document.getElementById('metricSO').textContent = '0';
+                document.getElementById('metricISO').textContent = '.000';
+                renderTable(); return;
             }
             const totals = gameData.reduce((acc, g) => {
-                acc.ab += (g.ab || 0); acc.h += (g.hits || 0); acc.d += (g.d || 0); acc.t += (g.t || 0);
-                acc.hr += (g.hr || 0); acc.bb += (g.bb || 0); acc.hbp += (g.hbp || 0); acc.s += (g.s || 0);
+                acc.ab += g.ab; acc.h += g.hits; acc.d += g.d; acc.t += g.t; acc.hr += g.hr; 
+                acc.bb += g.bb; acc.hbp += g.hbp; acc.s += g.s; acc.so += g.so;
                 return acc;
-            }, { ab:0, h:0, d:0, t:0, hr:0, bb:0, hbp:0, s:0 });
+            }, { ab:0, h:0, d:0, t:0, hr:0, bb:0, hbp:0, s:0, so:0 });
+            
             const tb = totals.s + (totals.d * 2) + (totals.t * 3) + (totals.hr * 4);
             const avg = totals.ab > 0 ? totals.h / totals.ab : 0;
             const obp = (totals.ab + totals.bb + totals.hbp) > 0 ? (totals.h + totals.bb + totals.hbp) / (totals.ab + totals.bb + totals.hbp) : 0;
             const slg = totals.ab > 0 ? tb / totals.ab : 0;
-            const format = (v) => v.toFixed(3).replace(/^0/, '');
+            
             document.getElementById('avgDisplay').textContent = format(avg);
             document.getElementById('obpDisplay').textContent = format(obp);
             document.getElementById('slgDisplay').textContent = format(slg);
             document.getElementById('opsDisplay').textContent = (obp + slg).toFixed(3).replace(/^0/, '');
-            updateChart(gameData); renderTable();
-            localStorage.setItem('bb_stats_v9', JSON.stringify(gameData));
+            
+            // Metrics Profile
+            document.getElementById('metricBB').textContent = totals.bb;
+            document.getElementById('metricSO').textContent = totals.so;
+            const iso = totals.ab > 0 ? slg - avg : 0;
+            document.getElementById('metricISO').textContent = format(iso);
+
+            updateChart(gameData);
+            updateDistribution(totals);
+            renderTable();
+            localStorage.setItem('bb_stats_v10', JSON.stringify(gameData));
         }
 
         function updateChart(data) {
@@ -463,93 +467,144 @@
             let cH = 0, cAB = 0;
             trendChart.data.labels = sorted.map(g => g.date.split('-').slice(1).join('/'));
             trendChart.data.datasets[0].data = sorted.map(g => {
-                cH += (g.hits || 0); cAB += (g.ab || 0);
+                cH += g.hits; cAB += g.ab;
                 return cAB > 0 ? cH / cAB : 0;
             });
             trendChart.update();
+        }
+
+        function updateDistribution(totals) {
+            if (!distributionChart) return;
+            distributionChart.data.datasets[0].data = [totals.s, totals.d, totals.t, totals.hr];
+            distributionChart.update();
         }
 
         function renderTable() {
             const body = document.getElementById('statsTableBody');
             body.innerHTML = '';
             [...gameData].sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(g => {
-                const avg = g.ab > 0 ? (g.hits / g.ab).toFixed(3).replace(/^0/, '') : ".000";
                 body.innerHTML += `
                     <tr class="hover:bg-slate-50 transition text-[11px]">
                         <td class="px-4 py-4 font-bold text-slate-700">${g.date}</td>
                         <td class="px-4 py-4 text-slate-500">${g.opponent || '—'}</td>
-                        <td class="px-2 py-4 text-center font-bold text-slate-800">${g.ab}</td>
+                        <td class="px-2 py-4 text-center font-bold">${g.ab}</td>
                         <td class="px-2 py-4 text-center font-black text-blue-600">${g.hits}</td>
-                        <td class="px-2 py-4 text-center text-slate-600">${g.s || 0}</td>
-                        <td class="px-2 py-4 text-center text-slate-600">${g.d || 0}</td>
-                        <td class="px-2 py-4 text-center text-slate-600">${g.t || 0}</td>
-                        <td class="px-2 py-4 text-center font-bold text-orange-600">${g.hr || 0}</td>
-                        <td class="px-2 py-4 text-center text-slate-600">${g.bb || 0}</td>
-                        <td class="px-2 py-4 text-center text-slate-400 italic">${g.so || 0}</td>
-                        <td class="px-2 py-4 text-center font-black text-green-600">${g.r || 0}</td>
-                        <td class="px-2 py-4 text-center font-black text-slate-800">${g.rbi || 0}</td>
-                        <td class="px-2 py-4 text-center font-bold text-indigo-600">${g.sb || 0}</td>
-                        <td class="px-2 py-4 text-center font-black text-blue-900">${avg}</td>
+                        <td class="px-2 py-4 text-center">${g.s}</td><td class="px-2 py-4 text-center">${g.d}</td>
+                        <td class="px-2 py-4 text-center">${g.t}</td><td class="px-2 py-4 text-center font-bold text-orange-600">${g.hr}</td>
+                        <td class="px-2 py-4 text-center">${g.bb}</td><td class="px-2 py-4 text-center italic text-slate-400">${g.so}</td>
+                        <td class="px-2 py-4 text-center font-black text-green-600">${g.r}</td><td class="px-2 py-4 text-center">${g.rbi}</td>
+                        <td class="px-2 py-4 text-center text-indigo-600 font-bold">${g.sb}</td>
+                        <td class="px-2 py-4 text-center font-black text-blue-900">${g.ab > 0 ? (g.hits/g.ab).toFixed(3).replace(/^0/,'') : '.000'}</td>
                         <td class="px-4 py-4 text-center">
-                            <button onclick="deleteGameEntry('${g.id}')" class="text-red-300 hover:text-red-500 transition">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                            <button onclick="deleteGameEntry('${g.id}')" class="text-red-300 hover:text-red-500">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"></path></svg>
                             </button>
                         </td>
                     </tr>`;
             });
         }
 
-        document.getElementById('statsForm').onsubmit = (e) => {
-            e.preventDefault();
-            const s = getStatsFromForm();
-            gameData.push({ id: Date.now(), date: document.getElementById('date').value, opponent: document.getElementById('opponent').value, ...s });
-            calculate();
-            e.target.reset(); document.getElementById('date').value = new Date().toISOString().split('T')[0];
-            currentFormStep = 1; updateFormUI(); showPage('dashboard');
-        };
-
-        function handleFileUpload(event) {
+        function handleCsvImport(event) {
             const file = event.target.files[0];
             if (!file) return;
+
             const reader = new FileReader();
             reader.onload = function(e) {
-                const rows = e.target.result.split('\n').filter(r => r.trim());
-                if (rows.length < 2) return;
-                const headers = rows[0].toLowerCase().split(',').map(h => h.trim());
-                const newGames = rows.slice(1).map(row => {
-                    const values = row.split(',').map(v => v.trim());
-                    const entry = { id: Date.now() + Math.random() };
-                    headers.forEach((h, i) => {
-                        if (h === 'date' || h === 'opponent') entry[h] = values[i];
-                        else entry[h === '1b' ? 's' : (h === '2b' ? 'd' : (h === '3b' ? 't' : h))] = parseInt(values[i]) || 0;
+                const text = e.target.result;
+                const lines = text.split('\n');
+                const newGames = [];
+                
+                for (let i = 1; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (!line) continue;
+                    
+                    const cols = line.split(',');
+                    if (cols.length < 13) continue;
+
+                    const s = parseInt(cols[3]) || 0;
+                    const d = parseInt(cols[4]) || 0;
+                    const t = parseInt(cols[5]) || 0;
+                    const hr = parseInt(cols[6]) || 0;
+
+                    newGames.push({
+                        id: Date.now() + i,
+                        date: cols[0],
+                        opponent: cols[1],
+                        ab: parseInt(cols[2]) || 0,
+                        s, d, t, hr,
+                        hits: (s + d + t + hr),
+                        so: parseInt(cols[7]) || 0,
+                        bb: parseInt(cols[8]) || 0,
+                        hbp: parseInt(cols[9]) || 0,
+                        r: parseInt(cols[10]) || 0,
+                        rbi: parseInt(cols[11]) || 0,
+                        sb: parseInt(cols[12]) || 0
                     });
-                    entry.hits = (entry.s || 0) + (entry.d || 0) + (entry.t || 0) + (entry.hr || 0);
-                    if (!entry.ab) entry.ab = entry.hits + (entry.so || 0);
-                    return entry;
-                });
-                gameData = [...gameData, ...newGames];
-                calculate(); showPage('dashboard');
+                }
+
+                if (newGames.length > 0) {
+                    if (confirm(`Found ${newGames.length} games. Append to existing data? (Cancel to replace instead)`)) {
+                        gameData = [...gameData, ...newGames];
+                    } else {
+                        gameData = newGames;
+                    }
+                    calculate();
+                    showPage('dashboard');
+                } else {
+                    alert("No valid data found in CSV.");
+                }
+                event.target.value = ''; 
             };
             reader.readAsText(file);
         }
 
-        document.getElementById('exportCsvBtn').onclick = () => {
+        function exportData() {
             const csv = "date,opponent,ab,1b,2b,3b,hr,so,bb,hbp,r,rbi,sb\n" + 
                         gameData.map(g => `${g.date},${g.opponent},${g.ab},${g.s},${g.d},${g.t},${g.hr},${g.so},${g.bb},${g.hbp},${g.r},${g.rbi},${g.sb}`).join("\n");
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
-            a.download = `baseball_stats.csv`; a.click();
+            const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+            a.download = `baseball_stats_export.csv`; a.click();
+        }
+
+        document.getElementById('statsForm').onsubmit = (e) => {
+            e.preventDefault();
+            gameData.push({ id: Date.now(), date: document.getElementById('date').value, opponent: document.getElementById('opponent').value, ...getStatsFromForm() });
+            calculate(); e.target.reset(); currentFormStep = 1; updateFormUI(); showPage('dashboard');
         };
 
         window.onload = () => {
             document.getElementById('date').value = new Date().toISOString().split('T')[0];
-            const ctx = document.getElementById('performanceChart').getContext('2d');
-            trendChart = new Chart(ctx, {
+            
+            // Performance Chart
+            const ctx1 = document.getElementById('performanceChart').getContext('2d');
+            trendChart = new Chart(ctx1, {
                 type: 'line',
-                data: { labels: [], datasets: [{ label: 'AVG', data: [], borderColor: '#2563eb', borderWidth: 3, tension: 0.4, fill: true, backgroundColor: 'rgba(37, 99, 235, 0.05)', pointRadius: 0, pointHitRadius: 10 }] },
+                data: { labels: [], datasets: [{ data: [], borderColor: '#2563eb', borderWidth: 3, tension: 0.4, fill: true, backgroundColor: 'rgba(37, 99, 235, 0.05)', pointRadius: 0 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 1, ticks: { callback: v => v.toFixed(3).replace(/^0/, '') } }, x: { grid: { display: false } } } }
             });
-            const saved = localStorage.getItem('bb_stats_v9');
+
+            // Distribution Chart
+            const ctx2 = document.getElementById('distributionChart').getContext('2d');
+            distributionChart = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['1B', '2B', '3B', 'HR'],
+                    datasets: [{
+                        data: [0, 0, 0, 0],
+                        backgroundColor: ['#3b82f6', '#f43f5e', '#eab308', '#22c55e'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 10, font: { weight: 'bold', size: 10 } } }
+                    },
+                    cutout: '70%'
+                }
+            });
+
+            const saved = localStorage.getItem('bb_stats_v10');
             if (saved) gameData = JSON.parse(saved);
             calculate(); updateFormUI();
         };
