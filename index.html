@@ -66,6 +66,8 @@
             color: #1e293b;
             border-bottom-color: #1e293b;
         }
+        
+        #importStatus { transition: all 0.3s; }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen font-sans text-slate-900 overflow-x-hidden">
@@ -237,8 +239,32 @@
             </div>
             
             <div id="dataManagementPage" class="page-view hidden max-w-2xl mx-auto space-y-6">
-                 <div class="stats-card"><button onclick="exportData()" class="bg-slate-800 text-white px-6 py-2 rounded-xl">Export CSV</button></div>
-                 <div class="stats-card border-l-4 border-red-500"><button onclick="clearAllData()" class="text-red-600 font-bold">Clear All Data</button></div>
+                 <div class="stats-card space-y-6">
+                     <h3 class="text-lg font-bold text-slate-800">Transfer Data</h3>
+                     
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-4 border border-slate-100 rounded-xl bg-slate-50">
+                            <h4 class="text-xs font-black text-slate-400 uppercase mb-3">Backup</h4>
+                            <button onclick="exportData()" class="w-full bg-slate-800 text-white px-6 py-3 rounded-xl font-bold hover:bg-slate-700 transition">Export CSV</button>
+                            <p class="text-[10px] text-slate-500 mt-2">Download all entries as a CSV file.</p>
+                        </div>
+                        
+                        <div class="p-4 border border-slate-100 rounded-xl bg-slate-50">
+                            <h4 class="text-xs font-black text-slate-400 uppercase mb-3">Restore</h4>
+                            <label for="csvFileInput" class="w-full inline-block text-center bg-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-700 transition cursor-pointer">Import CSV</label>
+                            <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="importData(event)">
+                            <p class="text-[10px] text-slate-500 mt-2">Upload a previously exported CSV.</p>
+                        </div>
+                     </div>
+                     
+                     <div id="importStatus" class="hidden p-3 rounded-lg text-xs font-bold"></div>
+                 </div>
+
+                 <div class="stats-card border-l-4 border-red-500">
+                     <h3 class="text-lg font-bold text-red-600 mb-2">Danger Zone</h3>
+                     <p class="text-sm text-slate-500 mb-4">This will permanently delete all recorded games from this device.</p>
+                     <button onclick="clearAllData()" class="bg-red-50 text-red-600 px-6 py-2 rounded-xl font-bold border border-red-100 hover:bg-red-600 hover:text-white transition">Clear All Data</button>
+                 </div>
             </div>
 
         </main>
@@ -260,7 +286,7 @@
         function showPage(pageId) {
             document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
             document.getElementById(pageId + 'Page').classList.remove('hidden');
-            document.getElementById('pageTitle').textContent = pageId.charAt(0).toUpperCase() + pageId.slice(1);
+            document.getElementById('pageTitle').textContent = pageId.replace(/([A-Z])/g, ' $1').trim();
             closeAllMenus();
         }
 
@@ -271,7 +297,6 @@
             document.getElementById(`dash-tab-${tabId}`).classList.add('active');
         }
 
-        // --- DYNAMIC MIN/MAX LOGIC ---
         function getRequiredMinAB() {
             const hits = ['s', 'd', 't', 'hr'].reduce((sum, id) => sum + (parseInt(document.getElementById(id).value) || 0), 0);
             const so = parseInt(document.getElementById('so').value) || 0;
@@ -286,11 +311,9 @@
                 const min = getRequiredMinAB();
                 val = Math.max(min, val + delta);
             } else if (['s', 'd', 't', 'hr', 'so'].includes(id)) {
-                // If reducing hits or SO, simple floor of 0
                 if (delta < 0) {
                     val = Math.max(0, val + delta);
                 } else {
-                    // If increasing hits or SO, check if we exceed AB
                     const currentAB = parseInt(document.getElementById('ab').value) || 0;
                     const othersSum = ['s', 'd', 't', 'hr', 'so']
                         .filter(key => key !== id)
@@ -299,7 +322,6 @@
                     if (othersSum + val + delta <= currentAB) {
                         val += delta;
                     } else {
-                        // Automatically increment AB if we try to add more events than space allows
                         document.getElementById('ab').value = othersSum + val + delta;
                         val += delta;
                     }
@@ -312,8 +334,6 @@
 
         function handleNext() {
             if (currentFormStep === 1 && !document.getElementById('date').value) return;
-            
-            // Final check on AB page
             if (currentFormStep === 2) {
                 const min = getRequiredMinAB();
                 const currentAB = parseInt(document.getElementById('ab').value) || 0;
@@ -323,11 +343,7 @@
                 }
             }
             document.getElementById('abWarning')?.classList.add('hidden');
-            
-            if (currentFormStep < totalSteps) {
-                currentFormStep++;
-                updateFormUI();
-            }
+            if (currentFormStep < totalSteps) { currentFormStep++; updateFormUI(); }
         }
 
         function prevStep() { if (currentFormStep > 1) { currentFormStep--; updateFormUI(); } }
@@ -348,7 +364,6 @@
                 { l: 'Walks', v: 'bb' }, { l: 'HBP', v: 'hbp' }, { l: 'Runs', v: 'r' },
                 { l: 'RBIs', v: 'rbi' }, { l: 'SB', v: 'sb' }
             ];
-            
             const grid = document.getElementById('fullReviewGrid');
             grid.innerHTML = fields.map(f => `
                 <div class="flex justify-between border-b border-blue-100 pb-1">
@@ -356,24 +371,22 @@
                     <strong class="text-blue-900">${document.getElementById(f.v).value}</strong>
                 </div>
             `).join('');
-
             const ab = parseInt(document.getElementById('ab').value) || 0;
             const h = ['s', 'd', 't', 'hr'].reduce((s, id) => s + (parseInt(document.getElementById(id).value) || 0), 0);
             const avg = ab > 0 ? (h / ab).toFixed(3).replace(/^0/, '') : ".000";
-
-            document.getElementById('reviewCalculated').innerHTML = `
-                <div class="flex justify-between items-center">
-                    <span class="text-xs font-black text-blue-800 uppercase">Game AVG</span>
-                    <span class="text-2xl font-black text-blue-600">${avg}</span>
-                </div>
-            `;
+            document.getElementById('reviewCalculated').innerHTML = `<div class="flex justify-between items-center"><span class="text-xs font-black text-blue-800 uppercase">Game AVG</span><span class="text-2xl font-black text-blue-600">${avg}</span></div>`;
         }
 
         function calculate() {
             const fmt = (v) => v.toFixed(3).replace(/^0/, '');
             if (!gameData.length) {
                 ['avgDisplay','obpDisplay','slgDisplay','opsDisplay'].forEach(id => document.getElementById(id).textContent = '.000');
-                renderTable(); return;
+                ['metricBB', 'metricSO'].forEach(id => document.getElementById(id).textContent = '0');
+                document.getElementById('metricISO').textContent = '.000';
+                renderTable(); 
+                localStorage.setItem('bb_stats_v12', JSON.stringify([]));
+                updateCharts({ ab:0, h:0, s:0, d:0, t:0, hr:0, bb:0, hbp:0, so:0 });
+                return;
             }
 
             const totals = gameData.reduce((a, g) => {
@@ -391,7 +404,6 @@
             document.getElementById('obpDisplay').textContent = fmt(obp);
             document.getElementById('slgDisplay').textContent = fmt(slg);
             document.getElementById('opsDisplay').textContent = fmt(obp + slg);
-            
             document.getElementById('metricBB').textContent = totals.bb;
             document.getElementById('metricSO').textContent = totals.so;
             document.getElementById('metricISO').textContent = fmt(slg - avg);
@@ -404,8 +416,8 @@
         function updateCharts(totals) {
             const sorted = [...gameData].sort((a,b) => new Date(a.date) - new Date(b.date));
             let cH = 0, cAB = 0;
-            trendChart.data.labels = sorted.map(g => g.date.split('-').slice(1).join('/'));
-            trendChart.data.datasets[0].data = sorted.map(g => { cH += g.h; cAB += g.ab; return cAB > 0 ? cH/cAB : 0; });
+            trendChart.data.labels = sorted.length ? sorted.map(g => g.date.split('-').slice(1).join('/')) : ['None'];
+            trendChart.data.datasets[0].data = sorted.length ? sorted.map(g => { cH += g.h; cAB += g.ab; return cAB > 0 ? cH/cAB : 0; }) : [0];
             trendChart.update();
 
             distributionChart.data.datasets[0].data = [totals.s, totals.d, totals.t, totals.hr];
@@ -423,13 +435,13 @@
                     <td class="px-2 py-3 text-center">${g.bb}</td>
                     <td class="px-2 py-3 text-center text-slate-400 italic">${g.so}</td>
                     <td class="px-2 py-3 text-center font-black">${g.ab > 0 ? (g.h/g.ab).toFixed(3).replace(/^0/,'') : '.000'}</td>
-                    <td class="px-4 py-3 text-right"><button onclick="deleteGame('${g.id}')" class="text-red-300 hover:text-red-500">×</button></td>
+                    <td class="px-4 py-3 text-right"><button onclick="deleteGame('${g.id}')" class="text-red-300 hover:text-red-500 text-xl font-bold leading-none">×</button></td>
                 </tr>
             `).join('');
         }
 
-        function deleteGame(id) { if (confirm("Delete?")) { gameData = gameData.filter(g => String(g.id) !== String(id)); calculate(); } }
-        function clearAllData() { if (confirm("Wipe all?")) { gameData = []; calculate(); } }
+        function deleteGame(id) { if (confirm("Delete this entry?")) { gameData = gameData.filter(g => String(g.id) !== String(id)); calculate(); } }
+        function clearAllData() { if (confirm("This will permanently delete ALL data. Are you sure?")) { gameData = []; calculate(); } }
         
         function exportData() {
             if (!gameData.length) return;
@@ -439,12 +451,58 @@
             const blob = new Blob([csv], { type: 'text/csv' });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.setAttribute('hidden', '');
-            a.setAttribute('href', url);
-            a.setAttribute('download', `baseball_stats_${new Date().toISOString().split('T')[0]}.csv`);
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+            a.setAttribute('hidden', ''); a.setAttribute('href', url);
+            a.setAttribute('download', `baseball_stats_export.csv`);
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            const statusEl = document.getElementById('importStatus');
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const text = e.target.result;
+                    const lines = text.split(/\r?\n/).filter(line => line.trim());
+                    if (lines.length < 2) throw new Error("File is empty or invalid format.");
+                    
+                    const headers = lines[0].split(',').map(h => h.replace(/^"|"$/g, ''));
+                    const rows = lines.slice(1).map(line => {
+                        const values = line.split(',').map(v => v.replace(/^"|"$/g, ''));
+                        const obj = {};
+                        headers.forEach((h, i) => {
+                            let val = values[i];
+                            // Parse numbers
+                            if (!isNaN(val) && val !== "" && h !== 'date' && h !== 'opponent') {
+                                obj[h] = parseFloat(val);
+                            } else {
+                                obj[h] = val;
+                            }
+                        });
+                        return obj;
+                    });
+
+                    // Validate minimal required fields
+                    if (!rows[0].ab && rows[0].ab !== 0) throw new Error("Incompatible CSV format.");
+
+                    // Merge or replace? We'll merge based on ID to avoid duplicates if re-importing
+                    const existingIds = new Set(gameData.map(g => String(g.id)));
+                    const newEntries = rows.filter(r => !existingIds.has(String(r.id)));
+                    
+                    gameData = [...gameData, ...newEntries];
+                    calculate();
+                    
+                    statusEl.textContent = `Success: Imported ${newEntries.length} new entries.`;
+                    statusEl.className = "p-3 rounded-lg text-xs font-bold bg-green-100 text-green-700 block mt-4";
+                    event.target.value = ""; // reset file input
+                } catch (err) {
+                    statusEl.textContent = `Error: ${err.message}`;
+                    statusEl.className = "p-3 rounded-lg text-xs font-bold bg-red-100 text-red-700 block mt-4";
+                }
+            };
+            reader.readAsText(file);
         }
 
         document.getElementById('statsForm').onsubmit = (e) => {
