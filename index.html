@@ -96,7 +96,7 @@
                     <button onclick="toggleNav(true)" class="p-2 hover:bg-slate-100 rounded-lg transition text-slate-600">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
-                    <h1 class="text-xl font-black text-blue-900 tracking-tight">BASEBALL STATS</h1>
+                    <h1 class="text-xl font-black text-blue-900 tracking-tight">Deven's Baseball Stats</h1>
                 </div>
             </div>
         </header>
@@ -209,7 +209,7 @@
                             <div id="step8" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Walks (BB)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('bb', -1)" class="stepper-btn">-</button><input type="number" id="bb" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('bb', 1)" class="stepper-btn">+</button></div></div>
                             <div id="step9" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Hit by Pitch (HBP)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('hbp', -1)" class="stepper-btn">-</button><input type="number" id="hbp" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('hbp', 1)" class="stepper-btn">+</button></div></div>
                             <div id="step10" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Runs (R)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('r', -1)" class="stepper-btn">-</button><input type="number" id="r" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('r', 1)" class="stepper-btn">+</button></div></div>
-                            <div id="step11" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">RBIs?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('rbi', -1)" class="stepper-btn">-</button><input type="number" id="rbi" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('rbi', 1)" class="stepper-btn">+</button></div></div>
+                            <div id="step11" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Runs batted in (RBI)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('rbi', -1)" class="stepper-btn">-</button><input type="number" id="rbi" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('rbi', 1)" class="stepper-btn">+</button></div></div>
                             <div id="step12" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Stolen Bases (SB)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('sb', -1)" class="stepper-btn">-</button><input type="number" id="sb" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('sb', 1)" class="stepper-btn">+</button></div></div>
                             <!-- Step 13: Review -->
                             <div id="step13" class="step-content hidden">
@@ -359,10 +359,10 @@
 
         function buildFullReview() {
             const fields = [
-                { l: 'AB', v: 'ab' }, { l: 'Singles', v: 's' }, { l: 'Doubles', v: 'd' },
-                { l: 'Triples', v: 't' }, { l: 'Home Runs', v: 'hr' }, { l: 'Strikeouts', v: 'so' },
-                { l: 'Walks', v: 'bb' }, { l: 'HBP', v: 'hbp' }, { l: 'Runs', v: 'r' },
-                { l: 'RBIs', v: 'rbi' }, { l: 'SB', v: 'sb' }
+                { l: 'AB', v: 'ab' }, { l: '1B', v: 's' }, { l: '2B', v: 'd' },
+                { l: '3B', v: 't' }, { l: 'HR', v: 'hr' }, { l: 'SO', v: 'so' },
+                { l: 'BB', v: 'bb' }, { l: 'HBP', v: 'hbp' }, { l: 'R', v: 'r' },
+                { l: 'RBI', v: 'rbi' }, { l: 'SB', v: 'sb' }
             ];
             const grid = document.getElementById('fullReviewGrid');
             grid.innerHTML = fields.map(f => `
