@@ -1,2 +1,2 @@
 # stat5-deven
-deven.stat5.foo
+Site: https://deven.stat5.foo
