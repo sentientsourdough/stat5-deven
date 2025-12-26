@@ -369,10 +369,10 @@
 
         function buildFullReview() {
             const fields = [
-                { l: 'AB', v: 'ab' }, { l: 'Singles', v: 's' }, { l: 'Doubles', v: 'd' },
-                { l: 'Triples', v: 't' }, { l: 'Home Runs', v: 'hr' }, { l: 'Strikeouts', v: 'so' },
-                { l: 'Walks', v: 'bb' }, { l: 'HBP', v: 'hbp' }, { l: 'Runs', v: 'r' },
-                { l: 'RBIs', v: 'rbi' }, { l: 'SB', v: 'sb' }
+                { l: 'AB', v: 'ab' }, { l: '1B', v: 's' }, { l: '2B', v: 'd' },
+                { l: '3B', v: 't' }, { l: 'HR', v: 'hr' }, { l: 'SO', v: 'so' },
+                { l: 'BB', v: 'bb' }, { l: 'HBP', v: 'hbp' }, { l: 'R', v: 'r' },
+                { l: 'RBI', v: 'rbi' }, { l: 'SB', v: 'sb' }
             ];
             const grid = document.getElementById('fullReviewGrid');
             grid.innerHTML = fields.map(f => `
