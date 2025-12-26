@@ -12,3 +12,9 @@ Gemfile.lock
 # OS generated files
 .DS_Store
 thumbs.db
+
+# Backup files
+*.orig
+*.bak
+*.old
+*.new
