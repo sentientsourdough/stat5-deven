@@ -85,7 +85,6 @@
             <button onclick="showPage('dashboard')" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition text-left">Dashboard</button>
             <button onclick="showPage('addData')" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition text-left">Add Game</button>
             <button onclick="showPage('glossary')" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition text-left">Glossary</button>
-            <button onclick="showPage('dataManagement')" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition text-left">Data Management</button>
         </nav>
     </aside>
 
@@ -185,32 +184,68 @@
                 </div>
             </div>
 
-            <!-- ADD DATA -->
-            <div id="addDataPage" class="page-view hidden max-w-lg mx-auto">
+            <!-- GLOSSARY PAGE -->
+            <div id="glossaryPage" class="page-view hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="stats-card">
+                        <strong class="block text-blue-600 text-xs font-black uppercase mb-1">AB: At Bats</strong>
+                        <p class="text-sm text-slate-600 leading-relaxed">Total turns at bat, excluding walks (BB), hit by pitches (HBP), sacrifices, and catcher's interference.</p>
+                    </div>
+                    <div class="stats-card">
+                        <strong class="block text-blue-600 text-xs font-black uppercase mb-1">AVG: Batting Average</strong>
+                        <p class="text-sm text-slate-600 leading-relaxed">A measure of a batter's ability to get hits. Formula: <code>Total Hits (1B+2B+3B+HR) / AB</code>.</p>
+                    </div>
+                    <div class="stats-card">
+                        <strong class="block text-blue-600 text-xs font-black uppercase mb-1">OBP: On-Base Percentage</strong>
+                        <p class="text-sm text-slate-600 leading-relaxed">How often a batter reaches base. Formula: <code>(H + BB + HBP) / (AB + BB + HBP + SF)</code>.</p>
+                    </div>
+                    <div class="stats-card">
+                        <strong class="block text-blue-600 text-xs font-black uppercase mb-1">SLG: Slugging Percentage</strong>
+                        <p class="text-sm text-slate-600 leading-relaxed">Total bases per at-bat. Formula: <code>(1B + 2*2B + 3*3B + 4*HR) / AB</code>.</p>
+                    </div>
+                    <div class="stats-card">
+                        <strong class="block text-blue-600 text-xs font-black uppercase mb-1">OPS: On-Base Plus Slugging</strong>
+                        <p class="text-sm text-slate-600 leading-relaxed">The combined measure of a player's ability to get on base and hit for power. Formula: <code>OBP + SLG</code>.</p>
+                    </div>
+                    <div class="stats-card">
+                        <strong class="block text-blue-600 text-xs font-black uppercase mb-1">RBI: Runs Batted In</strong>
+                        <p class="text-sm text-slate-600 leading-relaxed">The number of runs that score safely as a result of the batter's action (hit, walk with bases loaded, etc).</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADD DATA PAGE -->
+            <div id="addDataPage" class="page-view hidden max-w-lg mx-auto space-y-8">
+                <!-- Manual Entry Section -->
                 <div class="stats-card min-h-[500px] flex flex-col">
                     <div class="flex justify-between items-start mb-6">
                         <h2 id="formHeader" class="text-xl font-bold">New Entry</h2>
                         <span id="stepIndicator" class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded">Step 1 of 13</span>
                     </div>
-                    <form id="statsForm" class="flex-grow flex flex-col">
-                        <div class="flex-grow">
-                            <!-- Step 1: Info -->
-                            <div id="step1" class="step-content space-y-4">
-                                <div><label class="block text-xs font-bold text-slate-500 uppercase mb-1">Date</label><input type="date" id="date" required class="w-full rounded-lg border border-slate-200 p-3 outline-none focus:ring-2 focus:ring-blue-500"></div>
-                                <div><label class="block text-xs font-bold text-slate-500 uppercase mb-1">Opponent</label><input type="text" id="opponent" placeholder="Optional" class="w-full rounded-lg border border-slate-200 p-3 outline-none focus:ring-2 focus:ring-blue-500"></div>
+                    <form id="statsForm" class="flex-grow flex flex-col justify-between">
+                        <div id="step1" class="step-content space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Date</label>
+                                <input type="date" id="date" required class="w-full rounded-lg border border-slate-200 p-3 focus:ring-2 focus:ring-blue-500 outline-none">
                             </div>
-                            <!-- Steppers -->
-                            <div id="step2" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">At Bats (AB)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('ab', -1)" class="stepper-btn">-</button><input type="number" id="ab" value="0" readonly class="text-5xl font-black w-24 text-center bg-transparent"><button type="button" onclick="stepVal('ab', 1)" class="stepper-btn">+</button></div><p id="abWarning" class="text-[10px] text-red-500 font-bold hidden uppercase">AB must be ≥ Total Hits + Strikeouts</p></div>
-                            <div id="step3" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Singles (1B)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('s', -1)" class="stepper-btn">-</button><input type="number" id="s" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('s', 1)" class="stepper-btn">+</button></div></div>
-                            <div id="step4" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Doubles (2B)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('d', -1)" class="stepper-btn">-</button><input type="number" id="d" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('d', 1)" class="stepper-btn">+</button></div></div>
-                            <div id="step5" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Triples (3B)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('t', -1)" class="stepper-btn">-</button><input type="number" id="t" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('t', 1)" class="stepper-btn">+</button></div></div>
-                            <div id="step6" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Home Runs (HR)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('hr', -1)" class="stepper-btn">-</button><input type="number" id="hr" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('hr', 1)" class="stepper-btn">+</button></div></div>
-                            <div id="step7" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Strikeouts (SO)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('so', -1)" class="stepper-btn">-</button><input type="number" id="so" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('so', 1)" class="stepper-btn">+</button></div></div>
-                            <div id="step8" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Walks (BB)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('bb', -1)" class="stepper-btn">-</button><input type="number" id="bb" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('bb', 1)" class="stepper-btn">+</button></div></div>
-                            <div id="step9" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Hit by Pitch (HBP)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('hbp', -1)" class="stepper-btn">-</button><input type="number" id="hbp" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('hbp', 1)" class="stepper-btn">+</button></div></div>
-                            <div id="step10" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Runs (R)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('r', -1)" class="stepper-btn">-</button><input type="number" id="r" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('r', 1)" class="stepper-btn">+</button></div></div>
-                            <div id="step11" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">RBIs?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('rbi', -1)" class="stepper-btn">-</button><input type="number" id="rbi" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('rbi', 1)" class="stepper-btn">+</button></div></div>
-                            <div id="step12" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Stolen Bases (SB)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('sb', -1)" class="stepper-btn">-</button><input type="number" id="sb" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('sb', 1)" class="stepper-btn">+</button></div></div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Opponent</label>
+                                <input type="text" id="opponent" placeholder="e.g. Mudhens" class="w-full rounded-lg border border-slate-200 p-3 focus:ring-2 focus:ring-blue-500 outline-none">
+                            </div>
+                        </div>
+
+                        <div id="stepperContainer">
+                            <div id="step2" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">At Bats (AB)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('ab', -1)" class="stepper-btn">-</button><input type="number" id="ab" value="0" readonly class="text-5xl font-black w-24 text-center outline-none bg-transparent"><button type="button" onclick="stepVal('ab', 1)" class="stepper-btn">+</button></div><p id="abWarning" class="text-[10px] text-red-500 font-bold hidden uppercase">AB must be ≥ Total Hits + Strikeouts</p></div>
+                            <div id="step3" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">Singles (1B)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('s', -1)" class="stepper-btn">-</button><input type="number" id="s" value="0" readonly class="text-5xl font-black w-20 text-center outline-none bg-transparent"><button type="button" onclick="stepVal('s', 1)" class="stepper-btn">+</button></div></div>
+                            <div id="step4" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">Doubles (2B)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('d', -1)" class="stepper-btn">-</button><input type="number" id="d" value="0" readonly class="text-5xl font-black w-20 text-center outline-none bg-transparent"><button type="button" onclick="stepVal('d', 1)" class="stepper-btn">+</button></div></div>
+                            <div id="step5" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">Triples (3B)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('t', -1)" class="stepper-btn">-</button><input type="number" id="t" value="0" readonly class="text-5xl font-black w-20 text-center outline-none bg-transparent"><button type="button" onclick="stepVal('t', 1)" class="stepper-btn">+</button></div></div>
+                            <div id="step6" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">Home Runs (HR)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('hr', -1)" class="stepper-btn">-</button><input type="number" id="hr" value="0" readonly class="text-5xl font-black w-20 text-center outline-none bg-transparent"><button type="button" onclick="stepVal('hr', 1)" class="stepper-btn">+</button></div></div>
+                            <div id="step7" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">Strikeouts (SO)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('so', -1)" class="stepper-btn">-</button><input type="number" id="so" value="0" readonly class="text-5xl font-black w-20 text-center outline-none bg-transparent"><button type="button" onclick="stepVal('so', 1)" class="stepper-btn">+</button></div></div>
+                            <div id="step8" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">Walks (BB)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('bb', -1)" class="stepper-btn">-</button><input type="number" id="bb" value="0" readonly class="text-5xl font-black w-20 text-center outline-none bg-transparent"><button type="button" onclick="stepVal('bb', 1)" class="stepper-btn">+</button></div></div>
+                            <div id="step9" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">Hit by Pitch (HBP)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('hbp', -1)" class="stepper-btn">-</button><input type="number" id="hbp" value="0" readonly class="text-5xl font-black w-20 text-center outline-none bg-transparent"><button type="button" onclick="stepVal('hbp', 1)" class="stepper-btn">+</button></div></div>
+                            <div id="step10" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">Runs (R)?</p><div class="flex items-center justify-center gap-6"><button type="button" id="rMinus" onclick="stepVal('r', -1)" class="stepper-btn">-</button><input type="number" id="r" value="0" readonly class="text-5xl font-black w-20 text-center outline-none bg-transparent"><button type="button" id="rPlus" onclick="stepVal('r', 1)" class="stepper-btn">+</button></div></div>
+                            <div id="step11" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">RBIs?</p><div class="flex items-center justify-center gap-6"><button type="button" id="rbiMinus" onclick="stepVal('rbi', -1)" class="stepper-btn">-</button><input type="number" id="rbi" value="0" readonly class="text-5xl font-black w-20 text-center outline-none bg-transparent"><button type="button" id="rbiPlus" onclick="stepVal('rbi', 1)" class="stepper-btn">+</button></div></div>
+                            <div id="step12" class="step-content hidden space-y-6 text-center"><p class="text-slate-500 text-sm font-medium">Stolen Bases (SB)?</p><div class="flex items-center justify-center gap-6"><button type="button" id="sbMinus" onclick="stepVal('sb', -1)" class="stepper-btn">-</button><input type="number" id="sb" value="0" readonly class="text-5xl font-black w-20 text-center outline-none bg-transparent"><button type="button" id="sbPlus" onclick="stepVal('sb', 1)" class="stepper-btn">+</button></div></div>
                             <!-- Step 13: Review -->
                             <div id="step13" class="step-content hidden">
                                 <div class="bg-blue-50 rounded-xl p-4 border border-blue-100 overflow-y-auto max-h-[300px]">
@@ -228,18 +263,9 @@
                         </div>
                     </form>
                 </div>
-            </div>
 
-            <div id="glossaryPage" class="page-view hidden">
-                <div class="stats-card space-y-4">
-                    <p class="text-sm"><strong>AVG:</strong> Hits / At Bats</p>
-                    <p class="text-sm"><strong>OBP:</strong> (H + BB + HBP) / (AB + BB + HBP)</p>
-                    <p class="text-sm"><strong>SLG:</strong> Total Bases / At Bats</p>
-                </div>
-            </div>
-            
-            <div id="dataManagementPage" class="page-view hidden max-w-2xl mx-auto space-y-6">
-                 <div class="stats-card space-y-6">
+                <!-- Transfer Data & Danger Zone -->
+                <div class="stats-card space-y-6">
                      <h3 class="text-lg font-bold text-slate-800">Transfer Data</h3>
                      
                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -258,13 +284,13 @@
                      </div>
                      
                      <div id="importStatus" class="hidden p-3 rounded-lg text-xs font-bold"></div>
-                 </div>
+                </div>
 
-                 <div class="stats-card border-l-4 border-red-500">
+                <div class="stats-card border-l-4 border-red-500">
                      <h3 class="text-lg font-bold text-red-600 mb-2">Danger Zone</h3>
                      <p class="text-sm text-slate-500 mb-4">This will permanently delete all recorded games from this device.</p>
                      <button onclick="clearAllData()" class="bg-red-50 text-red-600 px-6 py-2 rounded-xl font-bold border border-red-100 hover:bg-red-600 hover:text-white transition">Clear All Data</button>
-                 </div>
+                </div>
             </div>
 
         </main>
@@ -279,8 +305,7 @@
         const PAGE_TITLES = {
             'dashboard': 'Dashboard',
             'addData': 'Add Game',
-            'glossary': 'Glossary',
-            'dataManagement': 'Data Management'
+            'glossary': 'Glossary'
         };
 
         function toggleNav(open) {
@@ -295,7 +320,6 @@
             const target = document.getElementById(pageId + 'Page');
             if (target) target.classList.remove('hidden');
             
-            // Fix: Use the mapping object to set correct titles
             document.getElementById('pageTitle').textContent = PAGE_TITLES[pageId] || 'Dashboard';
             closeAllMenus();
         }
