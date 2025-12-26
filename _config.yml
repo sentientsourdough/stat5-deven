@@ -1,0 +1,18 @@
+title: Baseball Stats Tracker
+description: Advanced performance tracking for baseball athletes.
+baseurl: ""
+url: "https://sentientsourdough.github.io"
+
+# Build settings
+markdown: kramdown
+
+# List files/folders to ignore during the build process
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - .gitignore
+  - node_modules
+  - vendor
+  - index.html-20251226_153254.bak
+  - index.html.orig
+  - _config.yml.bak
