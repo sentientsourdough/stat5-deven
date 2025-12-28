@@ -3,12 +3,11 @@ layout: default
 ---
 
     <div id="overlay" onclick="closeAllMenus()" class="fixed inset-0 bg-slate-900/50 z-[60]"></div>
-    <input type="file" id="csvImportInput" accept=".csv" class="hidden" onchange="handleCsvImport(event)">
 
     <!-- Navigation Sidebar -->
     <aside id="navSidebar" class="fixed top-0 left-0 h-full w-64 bg-white z-[70] shadow-2xl p-6">
         <div class="flex items-center justify-between mb-8">
-            <h2 class="text-lg font-black text-blue-900 tracking-tight">MENU</h2>
+            <h2 class="text-lg font-black text-blue-900 tracking-tight">Menu</h2>
             <button onclick="toggleNav(false)" class="p-2 hover:bg-slate-100 rounded-full transition">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
@@ -18,9 +17,9 @@ layout: default
             <button onclick="showPage('liveGame')" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition text-left">
                 <span class="text-red-500 mr-1">●</span> Live Game
             </button>
-            <button onclick="showPage('addData')" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition text-left">Add Past Game</button>
+            <button onclick="showPage('addData')" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition text-left">Previous Game</button>
+            <button onclick="showPage('dataManagement')" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition text-left">Data</button>
             <button onclick="showPage('glossary')" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition text-left">Glossary</button>
-            <button onclick="showPage('dataManagement')" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition text-left">Data Management</button>
         </nav>
     </aside>
 
@@ -31,7 +30,7 @@ layout: default
                     <button onclick="toggleNav(true)" class="p-2 hover:bg-slate-100 rounded-lg transition text-slate-600">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
-                    <h1 class="text-xl font-black text-blue-900 tracking-tight">BASEBALL STATS</h1>
+                    <h1 class="text-xl font-black text-blue-900 tracking-tight">Deven's Baseball Stats</h1>
                 </div>
             </div>
         </header>
@@ -41,7 +40,6 @@ layout: default
 
             <!-- DASHBOARD -->
             <div id="dashboardPage" class="page-view">
-                <!-- (Dashboard content preserved) -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                     <div class="stats-card border-t-4 border-blue-500">
                         <p class="text-slate-400 text-[10px] uppercase font-black tracking-wider">AVG</p>
@@ -61,13 +59,14 @@ layout: default
                     </div>
                 </div>
 
-                <div class="mb-6 border-b border-slate-200 flex gap-1 sm:gap-4 overflow-x-auto no-scrollbar">
+                <!-- Tab Menu -->
+                <div class="mb-6 border-b border-slate-200 flex gap-4 overflow-x-auto no-scrollbar">
                     <button onclick="switchDashTab('performance')" id="dash-tab-performance" class="sub-tab-btn active">Performance</button>
-                    <button onclick="switchDashTab('metrics')" id="dash-tab-metrics" class="sub-tab-btn">Metric Profile</button>
                     <button onclick="switchDashTab('distribution')" id="dash-tab-distribution" class="sub-tab-btn">Hit Distribution</button>
                     <button onclick="switchDashTab('log')" id="dash-tab-log" class="sub-tab-btn">Game Log</button>
                 </div>
 
+                <!-- PERFORMANCE CARD -->
                 <div id="dash-section-performance" class="dash-section">
                     <div class="stats-card mb-8">
                         <h3 class="text-sm font-bold mb-6 text-slate-500 uppercase tracking-widest">Season Performance</h3>
@@ -75,24 +74,7 @@ layout: default
                     </div>
                 </div>
 
-                <div id="dash-section-metrics" class="dash-section hidden">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                        <div class="stats-card">
-                            <h3 class="text-sm font-bold mb-6 text-slate-500 uppercase tracking-widest text-center">Plate Discipline</h3>
-                            <div class="flex justify-around text-center py-4">
-                                <div><p class="text-xs font-bold text-slate-400 uppercase">Walks</p><p id="metricBB" class="text-2xl font-black text-slate-800">0</p></div>
-                                <div><p class="text-xs font-bold text-slate-400 uppercase">Strikeouts</p><p id="metricSO" class="text-2xl font-black text-slate-800">0</p></div>
-                            </div>
-                        </div>
-                        <div class="stats-card">
-                            <h3 class="text-sm font-bold mb-6 text-slate-500 uppercase tracking-widest text-center">Power Metrics</h3>
-                            <div class="flex justify-around text-center py-4">
-                                <div><p class="text-xs font-bold text-slate-400 uppercase">ISO (Iso Power)</p><p id="metricISO" class="text-2xl font-black text-slate-800">.000</p></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+                <!-- DISTRIBUTION CARD -->
                 <div id="dash-section-distribution" class="dash-section hidden">
                     <div class="stats-card mb-8">
                         <h3 class="text-sm font-bold mb-6 text-slate-500 uppercase tracking-widest">Hit Type Breakdown</h3>
@@ -100,6 +82,7 @@ layout: default
                     </div>
                 </div>
 
+                <!-- GAME LOG CARD -->
                 <div id="dash-section-log" class="dash-section hidden">
                     <div class="stats-card overflow-x-auto mb-8">
                         <table class="min-w-full divide-y divide-slate-100">
@@ -127,7 +110,7 @@ layout: default
                     <div class="flex justify-between items-center mb-4">
                         <div class="w-full mr-4">
                             <label class="block text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1">Opponent</label>
-                            <input type="text" id="liveOpponent" class="w-full bg-slate-50 border border-slate-200 rounded p-2 text-sm font-bold text-slate-800" placeholder="Enter Team Name" onchange="persistOpponent()">
+                            <input type="text" id="liveOpponent" class="w-full bg-slate-50 border border-slate-200 rounded p-2 text-sm font-bold text-slate-800" placeholder="Enter Team Name">
                         </div>
                         <div class="text-right whitespace-nowrap">
                             <label class="block text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1">Date</label>
@@ -135,39 +118,32 @@ layout: default
                         </div>
                     </div>
                     
-                    <!-- Live Scoreboard -->
                     <div class="bg-blue-900 rounded-xl p-4 text-white grid grid-cols-4 gap-2 text-center mb-2 shadow-lg">
-                        <div><p class="text-[10px] opacity-60 uppercase">AB</p><p id="liveAB" class="text-2xl font-black">0</p></div>
-                        <div><p class="text-[10px] opacity-60 uppercase">H</p><p id="liveH" class="text-2xl font-black">0</p></div>
-                        <div><p class="text-[10px] opacity-60 uppercase">RBI</p><p id="liveRBI" class="text-2xl font-black">0</p></div>
-                        <div><p class="text-[10px] opacity-60 uppercase">R</p><p id="liveR" class="text-2xl font-black">0</p></div>
-                    </div>
-                    <div class="text-center">
-                         <span class="text-xs text-slate-400 font-bold uppercase">AVG: </span><span id="liveAVG" class="text-sm font-black text-blue-600">.000</span>
+                        <div><p class="text-[10px] opacity-60 uppercase">AB</p><p id="liveABDisplay" class="text-2xl font-black">0</p></div>
+                        <div><p class="text-[10px] opacity-60 uppercase">H</p><p id="liveHDisplay" class="text-2xl font-black">0</p></div>
+                        <div><p class="text-[10px] opacity-60 uppercase">RBI</p><p id="liveRBIDisplay" class="text-2xl font-black">0</p></div>
+                        <div><p class="text-[10px] opacity-60 uppercase">R</p><p id="liveRDisplay" class="text-2xl font-black">0</p></div>
                     </div>
                 </div>
 
-                <!-- Input Grid -->
                 <div id="liveKeypad" class="grid grid-cols-2 gap-3 mb-6 transition-all duration-300">
-                    <button onclick="handleLiveResult('s')" class="ab-btn hit-btn">1B</button>
-                    <button onclick="handleLiveResult('d')" class="ab-btn hit-btn">2B</button>
-                    <button onclick="handleLiveResult('t')" class="ab-btn hit-btn">3B</button>
-                    <button onclick="handleLiveResult('hr')" class="ab-btn hit-btn bg-blue-600 text-white hover:bg-blue-700 border-none">HR</button>
-                    <button onclick="handleLiveResult('bb')" class="ab-btn walk-btn">BB</button>
-                    <button onclick="handleLiveResult('hbp')" class="ab-btn walk-btn">HBP</button>
-                    <button onclick="handleLiveResult('so')" class="ab-btn out-btn">SO</button>
-                    <button onclick="handleLiveResult('outs')" class="ab-btn out-btn">OUT</button>
+                    <button onclick="handleLiveResult('1B')" class="ab-btn hit-btn">1B</button>
+                    <button onclick="handleLiveResult('2B')" class="ab-btn hit-btn">2B</button>
+                    <button onclick="handleLiveResult('3B')" class="ab-btn hit-btn">3B</button>
+                    <button onclick="handleLiveResult('HR')" class="ab-btn hit-btn bg-blue-600 text-white hover:bg-blue-700 border-none">HR</button>
+                    <button onclick="handleLiveResult('BB')" class="ab-btn walk-btn">BB</button>
+                    <button onclick="handleLiveResult('HBP')" class="ab-btn walk-btn">HBP</button>
+                    <button onclick="handleLiveResult('SO')" class="ab-btn out-btn">SO</button>
+                    <button onclick="handleLiveResult('O')" class="ab-btn out-btn">O</button>
                 </div>
 
-                <!-- Wizard Context Panel -->
                 <div id="liveABContext" class="hidden stats-card bg-slate-50 border border-slate-200 mb-6">
-                    <!-- Step 1: RBIs -->
                     <div id="liveStepRBI" class="live-step hidden">
-                        <h3 class="text-center font-black text-blue-900 uppercase tracking-wider mb-4">RBIs on play?</h3>
+                        <h3 class="text-center font-black text-blue-900 tracking-wider mb-4">Runs Batted in (RBIs)?</h3>
                         <div class="flex items-center justify-center gap-6 mb-6">
-                            <button onclick="adjustLiveContext('rbi', -1)" class="stepper-btn bg-white border border-slate-200">-</button>
+                            <button onclick="adjustLiveContext('RBI', -1)" class="stepper-btn bg-white border border-slate-200">-</button>
                             <span id="liveContextRBI" class="text-3xl font-black text-slate-800">0</span>
-                            <button onclick="adjustLiveContext('rbi', 1)" class="stepper-btn bg-white border border-slate-200">+</button>
+                            <button onclick="adjustLiveContext('RBI', 1)" class="stepper-btn bg-white border border-slate-200">+</button>
                         </div>
                         <div class="flex gap-2">
                              <button onclick="cancelLiveAB()" class="w-1/3 py-3 rounded-xl bg-slate-200 text-slate-600 font-bold">Cancel</button>
@@ -175,13 +151,12 @@ layout: default
                         </div>
                     </div>
 
-                    <!-- Step 2: SBs -->
                     <div id="liveStepSB" class="live-step hidden">
-                        <h3 class="text-center font-black text-blue-900 uppercase tracking-wider mb-4">Stolen Bases?</h3>
+                        <h3 class="text-center font-black text-blue-900 tracking-wider mb-4">Stolen Bases (SB)?</h3>
                         <div class="flex items-center justify-center gap-6 mb-6">
-                            <button onclick="adjustLiveContext('sb', -1)" class="stepper-btn bg-white border border-slate-200">-</button>
+                            <button onclick="adjustLiveContext('SB', -1)" class="stepper-btn bg-white border border-slate-200">-</button>
                             <span id="liveContextSB" class="text-3xl font-black text-slate-800">0</span>
-                            <button onclick="adjustLiveContext('sb', 1)" class="stepper-btn bg-white border border-slate-200">+</button>
+                            <button onclick="adjustLiveContext('SB', 1)" class="stepper-btn bg-white border border-slate-200">+</button>
                         </div>
                         <div class="flex gap-2">
                              <button onclick="nextLiveStep(1)" class="w-1/3 py-3 rounded-xl bg-slate-200 text-slate-600 font-bold">Back</button>
@@ -189,9 +164,9 @@ layout: default
                         </div>
                     </div>
 
-                    <!-- Step 3: Run -->
                     <div id="liveStepRun" class="live-step hidden">
-                        <h3 class="text-center font-black text-blue-900 uppercase tracking-wider mb-4">Did you score?</h3>
+                        <!--h3 class="text-center font-black text-blue-900 uppercase tracking-wider mb-4">Scored?</h3-->
+                        <h3 class="text-center font-black text-blue-900 tracking-wider mb-4">Scored a Run (R)?</h3>
                         <div class="flex gap-4 mb-6">
                             <button onclick="setLiveRun(false); nextLiveStep(4)" class="w-1/2 py-4 rounded-xl bg-slate-200 text-slate-600 font-black text-xl hover:bg-slate-300">NO</button>
                             <button onclick="setLiveRun(true); nextLiveStep(4)" class="w-1/2 py-4 rounded-xl bg-green-500 text-white font-black text-xl hover:bg-green-600 shadow-lg shadow-green-100">YES</button>
@@ -199,9 +174,8 @@ layout: default
                          <button onclick="nextLiveStep(2)" class="w-full py-2 text-slate-400 font-bold text-xs uppercase">Back</button>
                     </div>
 
-                    <!-- Step 4: Confirm -->
                     <div id="liveStepConfirm" class="live-step hidden">
-                        <h3 class="text-center font-black text-blue-900 uppercase tracking-wider mb-2">Confirm Result</h3>
+                        <h3 class="text-center font-black text-blue-900 tracking-wider mb-2">Confirm Result</h3>
                         <div id="liveSummaryText" class="text-center text-sm text-slate-600 mb-6 bg-white p-4 rounded-xl border border-slate-100 shadow-sm font-mono"></div>
                         <div class="flex gap-2">
                             <button onclick="cancelLiveAB()" class="w-1/3 py-3 rounded-xl bg-white border border-slate-200 text-slate-500 font-bold">Cancel</button>
@@ -210,55 +184,44 @@ layout: default
                     </div>
                 </div>
 
-                <!-- Extra Controls -->
                 <div class="mt-8">
                     <button onclick="finalizeLiveGame()" class="w-full py-3 rounded-xl bg-slate-800 text-white font-bold hover:bg-slate-900 shadow-lg transition">
-                        Finish Game & Start New
+                        Finish Game
                     </button>
                 </div>
             </div>
 
-            <!-- ADD DATA (Past) PAGE -->
+            <!-- ADD DATA PAGE -->
             <div id="addDataPage" class="page-view hidden max-w-lg mx-auto space-y-8">
-                <!-- Manual Entry Form (Same as before) -->
                 <div class="stats-card min-h-[500px] flex flex-col">
                     <div class="flex justify-between items-start mb-6">
                         <h2 id="formHeader" class="text-xl font-bold">Manual Entry</h2>
-                        <span id="stepIndicator" class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded">Step 1 of 13</span>
+                        <span id="stepIndicator" class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded">Step 1 of 12</span>
                     </div>
                     <form id="statsForm" class="flex-grow flex flex-col justify-between">
-                        <!-- Step 1: Info -->
                         <div id="step1" class="step-content space-y-4">
                             <div>
                                 <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Date</label>
-                                <input type="date" id="date" required class="w-full rounded-lg border border-slate-200 p-3 outline-none focus:ring-2 focus:ring-blue-500">
+                                <input type="date" id="formDate" required class="w-full rounded-lg border border-slate-200 p-3 outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Opponent</label>
-                                <input type="text" id="opponent" placeholder="Optional" class="w-full rounded-lg border border-slate-200 p-3 outline-none focus:ring-2 focus:ring-blue-500">
+                                <input type="text" id="formOpponent" placeholder="Optional" class="w-full rounded-lg border border-slate-200 p-3 outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
                         </div>
                         
-                        <!-- (All Steppers for Manual Entry) -->
                         <div id="stepperContainer">
-                           <div id="step2" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">At Bats (AB)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('ab', -1)" class="stepper-btn">-</button><input type="number" id="ab" value="0" readonly class="text-5xl font-black w-24 text-center outline-none bg-transparent"><button type="button" onclick="stepVal('ab', 1)" class="stepper-btn">+</button></div><p id="abWarning" class="text-[10px] text-red-500 font-bold hidden uppercase">AB must be ≥ Total Hits + Strikeouts</p></div>
-                           <div id="step3" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Singles (1B)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('s', -1)" class="stepper-btn">-</button><input type="number" id="s" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('s', 1)" class="stepper-btn">+</button></div></div>
-                           <div id="step4" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Doubles (2B)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('d', -1)" class="stepper-btn">-</button><input type="number" id="d" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('d', 1)" class="stepper-btn">+</button></div></div>
-                           <div id="step5" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Triples (3B)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('t', -1)" class="stepper-btn">-</button><input type="number" id="t" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('t', 1)" class="stepper-btn">+</button></div></div>
-                           <div id="step6" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Home Runs (HR)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('hr', -1)" class="stepper-btn">-</button><input type="number" id="hr" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('hr', 1)" class="stepper-btn">+</button></div></div>
-                           <div id="step7" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Strikeouts (SO)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('so', -1)" class="stepper-btn">-</button><input type="number" id="so" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('so', 1)" class="stepper-btn">+</button></div></div>
-                           <div id="step8" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Walks (BB)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('bb', -1)" class="stepper-btn">-</button><input type="number" id="bb" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('bb', 1)" class="stepper-btn">+</button></div></div>
-                           <div id="step9" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Hit by Pitch (HBP)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('hbp', -1)" class="stepper-btn">-</button><input type="number" id="hbp" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('hbp', 1)" class="stepper-btn">+</button></div></div>
-                           <div id="step10" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Runs (R)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('r', -1)" class="stepper-btn">-</button><input type="number" id="r" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('r', 1)" class="stepper-btn">+</button></div></div>
-                           <div id="step11" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">RBIs?</p><div class="flex items-center justify-center gap-6"><button type="button" id="rbiMinus" onclick="stepVal('rbi', -1)" class="stepper-btn">-</button><input type="number" id="rbi" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('rbi', 1)" class="stepper-btn">+</button></div></div>
-                           <div id="step12" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Stolen Bases (SB)?</p><div class="flex items-center justify-center gap-6"><button type="button" id="sbMinus" onclick="stepVal('sb', -1)" class="stepper-btn">-</button><input type="number" id="sb" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('sb', 1)" class="stepper-btn">+</button></div></div>
-                           <div id="step13" class="step-content hidden">
-                                <div class="bg-blue-50 rounded-xl p-4 border border-blue-100 overflow-y-auto max-h-[300px]">
-                                    <h3 class="text-[10px] font-black text-blue-800 uppercase mb-4 text-center">Summary Review</h3>
-                                    <div id="fullReviewGrid" class="grid grid-cols-2 gap-y-3 gap-x-6 text-sm"></div>
-                                    <div id="reviewCalculated" class="mt-6 pt-4 border-t border-blue-200"></div>
-                                </div>
-                            </div>
+                           <div id="step2" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">At Bats (AB)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('AB', -1)" class="stepper-btn">-</button><input type="number" id="AB" value="0" readonly class="text-5xl font-black w-24 text-center outline-none bg-transparent"><button type="button" onclick="stepVal('AB', 1)" class="stepper-btn">+</button></div></div>
+                           <div id="step3" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Singles (1B)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('1B', -1)" class="stepper-btn">-</button><input type="number" id="1B" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('1B', 1)" class="stepper-btn">+</button></div></div>
+                           <div id="step4" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Doubles (2B)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('2B', -1)" class="stepper-btn">-</button><input type="number" id="2B" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('2B', 1)" class="stepper-btn">+</button></div></div>
+                           <div id="step5" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Triples (3B)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('3B', -1)" class="stepper-btn">-</button><input type="number" id="3B" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('3B', 1)" class="stepper-btn">+</button></div></div>
+                           <div id="step6" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Home Runs (HR)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('HR', -1)" class="stepper-btn">-</button><input type="number" id="HR" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('HR', 1)" class="stepper-btn">+</button></div></div>
+                           <div id="step7" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Strikeouts (SO)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('SO', -1)" class="stepper-btn">-</button><input type="number" id="SO" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('SO', 1)" class="stepper-btn">+</button></div></div>
+                           <div id="step8" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Walks (BB)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('BB', -1)" class="stepper-btn">-</button><input type="number" id="BB" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('BB', 1)" class="stepper-btn">+</button></div></div>
+                           <div id="step9" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Runs (R)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('R', -1)" class="stepper-btn">-</button><input type="number" id="R" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('R', 1)" class="stepper-btn">+</button></div></div>
+                           <div id="step10" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">RBIs?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('RBI', -1)" class="stepper-btn">-</button><input type="number" id="RBI" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('RBI', 1)" class="stepper-btn">+</button></div></div>
+                           <div id="step11" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Stolen Bases (SB)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('SB', -1)" class="stepper-btn">-</button><input type="number" id="SB" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('SB', 1)" class="stepper-btn">+</button></div></div>
+                           <div id="step12" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">HBP?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('HBP', -1)" class="stepper-btn">-</button><input type="number" id="HBP" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('HBP', 1)" class="stepper-btn">+</button></div></div>
                         </div>
 
                         <div class="flex gap-2 pt-6">
@@ -270,13 +233,121 @@ layout: default
                 </div>
             </div>
 
-            <!-- GLOSSARY & DATA MGMT -->
-            <div id="glossaryPage" class="page-view hidden">
-                <div class="stats-card space-y-4"><p class="text-sm">Standard baseball definitions apply.</p></div>
-            </div>
+            <!-- DATA MGMT PAGE -->
             <div id="dataManagementPage" class="page-view hidden max-w-2xl mx-auto space-y-6">
-                 <div class="stats-card"><button onclick="exportData()" class="bg-slate-800 text-white px-6 py-2 rounded-xl">Export CSV</button></div>
-                 <div class="stats-card border-l-4 border-red-500"><button onclick="clearAllData()" class="text-red-600 font-bold">Clear All Data</button></div>
+                 <div class="stats-card">
+                     <h3 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-4">Backup & Recovery</h3>
+                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                         <button onclick="exportData()" class="w-full bg-slate-800 text-white px-6 py-4 rounded-xl font-bold hover:bg-slate-900 transition flex flex-col items-center justify-center gap-1">
+                             <!--span>Download CSV Backup</span-->
+                             <span>Export</span>
+                             <span class="text-[12px] opacity-60 font-normal">.csv</span>
+                         </button>
+                         
+                         <label class="w-full bg-white border-2 border-dashed border-slate-200 text-slate-600 px-6 py-4 rounded-xl font-bold hover:border-blue-400 hover:text-blue-600 transition cursor-pointer flex flex-col items-center justify-center gap-1">
+                             <input type="file" id="csvUpload" class="hidden" accept=".csv" onchange="importData(event)">
+                             <!--span>Upload CSV Backup</span-->
+                             <span>Import</span>
+                             <span class="text-[12px] opacity-60 font-normal">.csv</span>
+                         </label>
+                     </div>
+                 </div>
+                 <div class="stats-card border-l-4 border-red-500"><button onclick="clearAllData()" class="text-red-600 font-bold">Clear Site Data</button></div>
+            </div>
+
+            <!-- GLOSSARY PAGE -->
+            <div id="glossaryPage" class="page-view hidden">
+                <div class="stats-card overflow-hidden">
+                    <h3 class="text-sm font-black text-blue-600 uppercase tracking-widest mb-6 px-2">Metric Reference Guide</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead class="bg-slate-50">
+                                <tr class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                    <th class="px-4 py-3 border-b">Key</th>
+                                    <th class="px-4 py-3 border-b">Value</th>
+                                    <th class="px-4 py-3 border-b">Formula / Logic</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-sm divide-y divide-slate-100">
+                                <tr>
+                                    <td class="px-4 py-3 font-bold text-blue-900">1B / 2B / 3B</td>
+                                    <td class="px-4 py-3 text-slate-700">Single / Double / Triple</td>
+                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">Batter hit the ball and reached base N (1-3) safely (even if thrown out at base N+1)</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 font-bold text-blue-900">HR</td>
+                                    <td class="px-4 py-3 text-slate-700">Home Run</td>
+                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">Batter hit the ball and reached home plate</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 font-bold text-blue-900">H</td>
+                                    <td class="px-4 py-3 text-slate-700">Hit</td>
+                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">1B | 2B | 3B | HR</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 font-bold text-blue-900">TB</td>
+                                    <td class="px-4 py-3 text-slate-700">Total Bases</td>
+                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">1B + 2B + 3B + HR</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 font-bold text-blue-900">BB</td>
+                                    <td class="px-4 py-3 text-slate-700">Walk</td>
+                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">Four balls & batter awarded first base</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 font-bold text-blue-900">HBP</td>
+                                    <td class="px-4 py-3 text-slate-700">Hit-by-pitch</td>
+                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">Batter struck by pitch (without swinging)</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 font-bold text-blue-900">SO</td>
+                                    <td class="px-4 py-3 text-slate-700">Strikeout</td>
+                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">Batter out on 3 strikes</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 font-bold text-blue-900">O</td>
+                                    <td class="px-4 py-3 text-slate-700">Out</td>
+                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">Batter retired by defense</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 font-bold text-blue-900">AB</td>
+                                    <td class="px-4 py-3 text-slate-700">At-bat</td>
+                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">H + O + SO</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 font-bold text-blue-900">R</td>
+                                    <td class="px-4 py-3 text-slate-700">Run</td>
+                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">Player scores</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 font-bold text-blue-900">RBI</td>
+                                    <td class="px-4 py-3 text-slate-700">Runs Batted In</td>
+                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">Teammate scores on batter's play</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 font-bold text-blue-900">AVG</td>
+                                    <td class="px-4 py-3 text-slate-700">Batting Average</td>
+                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">H / AB</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 font-bold text-blue-900">OBP</td>
+                                    <td class="px-4 py-3 text-slate-700">On-base Percentage</td>
+                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">(H + BB + HBP) / (AB + BB + HBP)</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 font-bold text-blue-900">SLG</td>
+                                    <td class="px-4 py-3 text-slate-700">Slugging Percentage</td>
+                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">(1B + 2*2B + 3*3B + 4*HR) / AB</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 font-bold text-blue-900">OPS</td>
+                                    <td class="px-4 py-3 text-slate-700">On-base Plus Slugging</td>
+                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">OBP + SLG</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
@@ -286,11 +357,11 @@ layout: default
         let trendChart;
         let distributionChart;
         let currentFormStep = 1;
-        const totalSteps = 13;
+        const totalSteps = 12;
         
-        let liveGame = { s:0, d:0, t:0, hr:0, so:0, bb:0, hbp:0, outs:0, r:0, rbi:0, sb:0, ab:0, hits:0 };
+        // Initial state with updated keys.
+        let liveGame = { '1B':0, '2B':0, '3B':0, 'HR':0, 'SO':0, 'BB':0, 'HBP':0, 'O':0, 'R':0, 'RBI':0, 'SB':0, 'AB':0, 'H':0 };
         let currentABContext = null;
-        let currentLiveId = null; // Track ID of game currently being edited
 
         function toggleNav(open) {
             document.getElementById('navSidebar').classList.toggle('active', open);
@@ -302,7 +373,7 @@ layout: default
         function showPage(pageId) {
             document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
             document.getElementById(pageId + 'Page').classList.remove('hidden');
-            const titles = { dashboard: "Dashboard", liveGame: "Live Game Tracker", addData: "Add Game Data", glossary: "Glossary", dataManagement: "Data Management" };
+            const titles = { dashboard: "Dashboard", liveGame: "Live Game Tracker", addData: "Previous Game", dataManagement: "Data", glossary: "Glossary" };
             document.getElementById('pageTitle').textContent = titles[pageId] || "App";
             
             if (pageId === 'liveGame') initLiveGame();
@@ -316,388 +387,259 @@ layout: default
             document.getElementById(`dash-tab-${tabId}`).classList.add('active');
         }
 
-        // --- LIVE GAME LOGIC ---
-        function initLiveGame() {
-            const savedOpponent = localStorage.getItem('currentOpponent') || "";
-            // Restore currentLiveId from storage if page reloaded
-            const storedId = localStorage.getItem('currentLiveId');
-            if (storedId) {
-                currentLiveId = parseInt(storedId);
-                // Try to find existing game data to populate local state
-                const existing = gameData.find(g => g.id === currentLiveId);
-                if (existing) {
-                    liveGame = { 
-                        s: existing.s || 0, d: existing.d || 0, t: existing.t || 0, hr: existing.hr || 0,
-                        so: existing.so || 0, bb: existing.bb || 0, hbp: existing.hbp || 0, outs: existing.outs || 0,
-                        r: existing.r || 0, rbi: existing.rbi || 0, sb: existing.sb || 0,
-                        ab: existing.ab || 0, hits: existing.hits || 0
-                    };
-                } else {
-                    // ID exists but game not found (deleted?), reset
-                    currentLiveId = null;
-                    localStorage.removeItem('currentLiveId');
-                    resetLiveGameData();
-                }
-            } else {
-                resetLiveGameData();
+        function calculate() {
+            if (!gameData.length) {
+                ['avgDisplay','obpDisplay','slgDisplay','opsDisplay'].forEach(id => document.getElementById(id).textContent = '.000');
+                renderTable(); return;
             }
+            
+            const totals = gameData.reduce((a, g) => {
+                a.AB += (g.AB || 0); 
+                a.H += (g.H || 0); 
+                a['1B'] += (g['1B'] || 0); 
+                a['2B'] += (g['2B'] || 0); 
+                a['3B'] += (g['3B'] || 0); 
+                a.HR += (g.HR || 0); 
+                a.BB += (g.BB || 0); 
+                a.HBP += (g.HBP || 0);
+                return a;
+            }, { AB:0, H:0, '1B':0, '2B':0, '3B':0, HR:0, BB:0, HBP:0 });
 
-            document.getElementById('liveOpponent').value = savedOpponent;
+            const tb = totals['1B'] + (totals['2B'] * 2) + (totals['3B'] * 3) + (totals.HR * 4);
+            const fmt = (v) => v.toFixed(3).replace(/^0/, '');
+            
+            document.getElementById('avgDisplay').textContent = totals.AB > 0 ? fmt(totals.H / totals.AB) : ".000";
+            document.getElementById('obpDisplay').textContent = (totals.AB + totals.BB + totals.HBP) > 0 ? fmt((totals.H + totals.BB + totals.HBP) / (totals.AB + totals.BB + totals.HBP)) : ".000";
+            document.getElementById('slgDisplay').textContent = totals.AB > 0 ? fmt(tb / totals.AB) : ".000";
+            
+            const slg = totals.AB > 0 ? (tb / totals.AB) : 0;
+            const obp = (totals.AB + totals.BB + totals.HBP) > 0 ? ((totals.H + totals.BB + totals.HBP) / (totals.AB + totals.BB + totals.HBP)) : 0;
+            document.getElementById('opsDisplay').textContent = fmt(obp + slg);
+
+            // UPDATED
+            //updateCharts();
+            updateCharts(totals);
+            renderTable();
+            localStorage.setItem('deven.stat5.foo_v17', JSON.stringify(gameData));
+        }
+
+        //function updateCharts() {
+        // NEW, UPDATED
+        function updateCharts(totals) {
+            // Season Performance Chart:
+            const sorted = [...gameData].sort((a,b) => new Date(a.Date) - new Date(b.Date));
+            let cH = 0, cAB = 0;
+            trendChart.data.labels = sorted.map(g => g.Date.split('-').slice(1).join('/'));
+            trendChart.data.datasets[0].data = sorted.map(g => { 
+                cH += (g.H || 0); 
+                cAB += (g.AB || 0); 
+                return cAB > 0 ? cH/cAB : 0; 
+            });
+            trendChart.update();
+
+            // Distribution Chart (NEW, UPDATED):
+            distributionChart.data.datasets[0].data = [totals['1B'], totals['2B'], totals['3B'], totals.HR];
+            distributionChart.update();
+        }
+
+        function renderTable() {
+            const body = document.getElementById('statsTableBody');
+            body.innerHTML = [...gameData].sort((a,b) => new Date(b.Date) - new Date(a.Date)).map(g => `
+                <tr class="text-[11px] hover:bg-slate-50 transition">
+                    <td class="px-4 py-4 font-bold text-slate-700">${g.Date}</td>
+                    <td class="px-4 py-4 text-slate-500">${g.Opponent || '—'}</td>
+                    <td class="px-2 py-4 text-center">${g.AB}</td>
+                    <td class="px-2 py-4 text-center font-bold text-blue-600">${g.H}</td>
+                    <td class="px-2 py-4 text-center">${g.BB}</td>
+                    <td class="px-2 py-4 text-center text-slate-400 italic">${g.SO}</td>
+                    <td class="px-2 py-4 text-center font-black">${g.AB > 0 ? (g.H/g.AB).toFixed(3).replace(/^0/,'') : '.000'}</td>
+                    <td class="px-4 py-3 text-right"><button onclick="deleteGame('${g.ID}')" class="text-red-300 hover:text-red-500">×</button></td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteGame(id) { if (confirm("Delete game?")) { gameData = gameData.filter(g => String(g.ID) !== String(id)); calculate(); } }
+        function clearAllData() { if (confirm("Delete ALL site data? It's recommended to export a .csv before continuing.")) { gameData = []; calculate(); } }
+
+        function exportData() {
+            if (!gameData.length) return;
+            const headers = ["ID", "Date", "Opponent", "AB", "1B", "2B", "3B", "HR", "H", "SO", "BB", "R", "RBI", "SB", "HBP", "O"];
+            const rows = gameData.map(g => headers.map(h => JSON.stringify(g[h] || (['Opponent'].includes(h) ? "" : 0))).join(","));
+            const csv = [headers.join(","), ...rows].join("\n");
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `deven.stat5.foo-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const text = e.target.result;
+                const lines = text.split(/\r?\n/).filter(line => line.trim() !== "");
+                const headers = lines[0].split(",").map(h => h.replace(/['"]+/g, '').trim());
+                const imported = [];
+                for (let i = 1; i < lines.length; i++) {
+                    const values = lines[i].split(",").map(v => v.replace(/['"]+/g, '').trim());
+                    const entry = {};
+                    headers.forEach((h, idx) => {
+                        let val = values[idx];
+                        if (!isNaN(val) && val !== "" && h !== 'Date' && h !== 'Opponent') val = Number(val);
+                        entry[h] = val;
+                    });
+                    if (entry.Date) imported.push(entry);
+                }
+                const existingIds = new Set(gameData.map(g => String(g.ID)));
+                imported.forEach(entry => {
+                    if (!entry.ID || !existingIds.has(String(entry.ID))) {
+                        entry.ID = entry.ID || Date.now() + Math.random();
+                        gameData.push(entry);
+                    }
+                });
+                calculate(); alert("Import complete");
+                event.target.value = '';
+            };
+            reader.readAsText(file);
+        }
+
+        function initLiveGame() {
             document.getElementById('liveDateDisplay').textContent = new Date().toLocaleDateString();
             updateLiveUI();
         }
         
-        function persistOpponent() { localStorage.setItem('currentOpponent', document.getElementById('liveOpponent').value); }
-        
-        function resetLiveGameData() {
-            liveGame = { s:0, d:0, t:0, hr:0, so:0, bb:0, hbp:0, outs:0, r:0, rbi:0, sb:0, ab:0, hits:0 };
-            document.getElementById('liveABContext').classList.add('hidden');
-            document.getElementById('liveKeypad').classList.remove('hidden');
-        }
-
         function updateLiveUI() {
-            liveGame.hits = liveGame.s + liveGame.d + liveGame.t + liveGame.hr;
-            liveGame.ab = liveGame.hits + liveGame.so + liveGame.outs;
-            const avg = liveGame.ab > 0 ? (liveGame.hits / liveGame.ab).toFixed(3).replace(/^0/, '') : ".000";
-            
-            document.getElementById('liveAB').textContent = liveGame.ab;
-            document.getElementById('liveH').textContent = liveGame.hits;
-            document.getElementById('liveRBI').textContent = liveGame.rbi;
-            document.getElementById('liveR').textContent = liveGame.r;
-            document.getElementById('liveAVG').textContent = avg;
+            liveGame.H = liveGame['1B'] + liveGame['2B'] + liveGame['3B'] + liveGame.HR;
+            liveGame.AB = liveGame.H + liveGame.SO + liveGame.O;
+            document.getElementById('liveABDisplay').textContent = liveGame.AB;
+            document.getElementById('liveHDisplay').textContent = liveGame.H;
+            document.getElementById('liveRBIDisplay').textContent = liveGame.RBI;
+            document.getElementById('liveRDisplay').textContent = liveGame.R;
         }
 
         function handleLiveResult(type) {
-            currentABContext = { type: type, rbi: 0, sb: 0, r: 0 };
-            const isHR = type === 'hr';
-            
-            if (isHR) { currentABContext.rbi = 1; currentABContext.r = 1; }
-
+            currentABContext = { type: type, RBI: 0, SB: 0, R: 0 };
+            if (type === 'HR') { currentABContext.RBI = 1; currentABContext.R = 1; }
             document.getElementById('liveKeypad').classList.add('hidden');
             document.getElementById('liveABContext').classList.remove('hidden');
-            
             showLiveStep(1);
         }
 
         function showLiveStep(step) {
             document.querySelectorAll('.live-step').forEach(el => el.classList.add('hidden'));
-            
-            if (step === 2) {
-                const type = currentABContext.type;
-                if (!['s', 'd', 't', 'bb', 'hbp'].includes(type)) {
-                    return showLiveStep(3);
-                }
-            }
-            if (step === 3) {
-                const type = currentABContext.type;
-                if (type === 'hr' || ['so', 'outs'].includes(type)) {
-                    return showLiveStep(4);
-                }
-            }
-            
+            if (step === 2 && !['1B', '2B', '3B', 'BB', 'HBP'].includes(currentABContext.type)) return showLiveStep(3);
+            if (step === 3 && (currentABContext.type === 'HR' || ['SO', 'O'].includes(currentABContext.type))) return showLiveStep(4);
             const stepMap = { 1: 'liveStepRBI', 2: 'liveStepSB', 3: 'liveStepRun', 4: 'liveStepConfirm' };
             document.getElementById(stepMap[step]).classList.remove('hidden');
-            
-            if (step === 1) document.getElementById('liveContextRBI').textContent = currentABContext.rbi;
-            if (step === 2) document.getElementById('liveContextSB').textContent = currentABContext.sb;
             if (step === 4) updateLiveSummary();
         }
 
-        function nextLiveStep(targetStep) {
-            showLiveStep(targetStep);
+        function nextLiveStep(targetStep) { showLiveStep(targetStep); }
+        function adjustLiveContext(field, delta) { 
+            currentABContext[field] = Math.max(0, currentABContext[field] + delta);
+            document.getElementById(field === 'RBI' ? 'liveContextRBI' : 'liveContextSB').textContent = currentABContext[field];
         }
-
-        function adjustLiveContext(field, delta) {
-            if (field === 'rbi') currentABContext.rbi = Math.max(0, currentABContext.rbi + delta);
-            if (field === 'sb') currentABContext.sb = Math.max(0, currentABContext.sb + delta);
-            if (field === 'rbi') document.getElementById('liveContextRBI').textContent = currentABContext.rbi;
-            if (field === 'sb') document.getElementById('liveContextSB').textContent = currentABContext.sb;
-        }
-
-        function setLiveRun(scored) {
-            currentABContext.r = scored ? 1 : 0;
-        }
+        function setLiveRun(scored) { currentABContext.R = scored ? 1 : 0; }
 
         function updateLiveSummary() {
-            const names = {s:'Single', d:'Double', t:'Triple', hr:'Home Run', bb:'Walk', hbp:'HBP', so:'Strikeout', outs:'Out'};
             document.getElementById('liveSummaryText').innerHTML = `
-                <div class="font-bold text-lg mb-2">${names[currentABContext.type]}</div>
-                <div class="grid grid-cols-3 gap-2 text-xs font-bold text-slate-500 uppercase">
-                    <div>RBI: <span class="text-slate-900">${currentABContext.rbi}</span></div>
-                    <div>SB: <span class="text-slate-900">${currentABContext.sb}</span></div>
-                    <div>Run: <span class="text-slate-900">${currentABContext.r ? 'YES' : 'NO'}</span></div>
+                <div class="font-bold text-lg mb-2">${currentABContext.type}</div>
+                <div class="grid grid-cols-3 gap-2 text-xs font-bold text-slate-500">
+                    <div>RBI: ${currentABContext.RBI}</div>
+                    <div>SB: ${currentABContext.SB}</div>
+                    <div>Run: ${currentABContext.R ? 'YES' : 'NO'}</div>
                 </div>
             `;
         }
 
         function cancelLiveAB() {
-            currentABContext = null;
             document.getElementById('liveABContext').classList.add('hidden');
             document.getElementById('liveKeypad').classList.remove('hidden');
-            document.querySelectorAll('.live-step').forEach(el => el.classList.add('hidden'));
         }
 
         function confirmLiveAB() {
-            if (!currentABContext) return;
-            
-            // 1. Update local live state
             const type = currentABContext.type;
             liveGame[type]++;
-            liveGame.rbi += currentABContext.rbi;
-            liveGame.sb += currentABContext.sb;
-            liveGame.r += currentABContext.r;
-            
-            // Recalc derived stats for the entry
-            liveGame.hits = liveGame.s + liveGame.d + liveGame.t + liveGame.hr;
-            liveGame.ab = liveGame.hits + liveGame.so + liveGame.outs;
-
-            // 2. Sync to Game Log (gameData)
-            const todayStr = new Date().toISOString().split('T')[0];
-            const oppName = document.getElementById('liveOpponent').value;
-
-            if (currentLiveId) {
-                // Update existing
-                const idx = gameData.findIndex(g => g.id === currentLiveId);
-                if (idx !== -1) {
-                    gameData[idx] = { 
-                        ...gameData[idx], 
-                        opponent: oppName,
-                        ...liveGame 
-                    };
-                } else {
-                    // Fallback if ID lost
-                    currentLiveId = null; 
-                }
-            }
-
-            if (!currentLiveId) {
-                // Create new
-                currentLiveId = Date.now();
-                localStorage.setItem('currentLiveId', currentLiveId);
-                const entry = {
-                    id: currentLiveId,
-                    date: todayStr,
-                    opponent: oppName,
-                    ...liveGame
-                };
-                gameData.push(entry);
-            }
-
-            // 3. Persist and Refresh Dashboard
-            calculate(); // Saves to localStorage bb_stats_v14
-            
+            liveGame.RBI += currentABContext.RBI;
+            liveGame.SB += currentABContext.SB;
+            liveGame.R += currentABContext.R;
             updateLiveUI();
             cancelLiveAB();
         }
 
         function finalizeLiveGame() {
-            if (confirm("Finish game and start a new one?")) {
-                // Game is already saved in gameData via confirmLiveAB
-                // We just need to reset the tracker
-                currentLiveId = null;
-                localStorage.removeItem('currentLiveId');
-                resetLiveGameData();
-                updateLiveUI();
+            if (confirm("Save game data?")) {
+                const entry = { 
+                    ID: Date.now(), 
+                    Date: new Date().toISOString().split('T')[0], 
+                    Opponent: document.getElementById('liveOpponent').value, 
+                    ...liveGame 
+                };
+                gameData.push(entry);
+                calculate();
+                liveGame = { '1B':0, '2B':0, '3B':0, 'HR':0, 'SO':0, 'BB':0, 'HBP':0, 'O':0, 'R':0, 'RBI':0, 'SB':0, 'AB':0, 'H':0 };
                 showPage('dashboard');
             }
         }
 
-        // --- MANUAL ENTRY LOGIC ---
-        function getRequiredMinAB() {
-            const hits = ['s', 'd', 't', 'hr'].reduce((sum, id) => sum + (parseInt(document.getElementById(id).value) || 0), 0);
-            const so = parseInt(document.getElementById('so').value) || 0;
-            return hits + so;
-        }
-
         function stepVal(id, delta) {
             const el = document.getElementById(id);
-            if (!el) return;
-            const limits = getLimits();
-            let newVal = (parseInt(el.value) || 0) + delta;
-            
-            if (id === 'ab') newVal = Math.max(limits.minAb, newVal);
-            else if (id === 'r') newVal = Math.min(Math.max(limits.minR, newVal), limits.maxR);
-            else if (id === 'rbi') newVal = Math.min(Math.max(limits.minRbi, newVal), limits.maxRbi);
-            else if (id === 'sb') newVal = Math.min(Math.max(0, newVal), limits.maxSb);
-            else newVal = Math.max(0, newVal);
-            
-            el.value = newVal;
-            
-            if (['s', 'd', 't', 'hr', 'so'].includes(id)) {
-                 const minAB = getRequiredMinAB();
-                 const abEl = document.getElementById('ab');
-                 if (parseInt(abEl.value) < minAB) abEl.value = minAB;
-            }
-
-            updateStepConstraints();
-            if (currentFormStep === totalSteps) updatePreview();
+            el.value = Math.max(0, (parseInt(el.value) || 0) + delta);
         }
-
-        function updateStepConstraints() {
-            const limits = getLimits();
-            const enforceLimits = (id, min, max) => {
-                const el = document.getElementById(id);
-                if (!el) return;
-                let val = parseInt(el.value) || 0;
-                if (val < min) el.value = min;
-                if (max !== undefined && val > max) el.value = max;
-                const plusBtn = document.getElementById(id + 'Plus');
-                const minusBtn = document.getElementById(id + 'Minus');
-                if (plusBtn) plusBtn.disabled = parseInt(el.value) >= max;
-                if (minusBtn) minusBtn.disabled = parseInt(el.value) <= min;
-            };
-            enforceLimits('r', limits.minR, limits.maxR);
-            enforceLimits('rbi', limits.minRbi, limits.maxRbi);
-            enforceLimits('sb', 0, limits.maxSb);
-        }
-
-        function handleNext() {
-            if (currentFormStep === 1 && !document.getElementById('date').value) return;
-            if (currentFormStep === 2) {
-                const min = getRequiredMinAB();
-                if ((parseInt(document.getElementById('ab').value)||0) < min) {
-                    document.getElementById('abWarning').classList.remove('hidden');
-                    return;
-                }
-            }
-            document.getElementById('abWarning')?.classList.add('hidden');
-            if (currentFormStep < totalSteps) { currentFormStep++; updateFormUI(); }
-        }
-
+        function handleNext() { if (currentFormStep < totalSteps) { currentFormStep++; updateFormUI(); } }
         function prevStep() { if (currentFormStep > 1) { currentFormStep--; updateFormUI(); } }
-
         function updateFormUI() {
             document.getElementById('stepIndicator').textContent = `Step ${currentFormStep} of ${totalSteps}`;
             document.querySelectorAll('.step-content').forEach((el, idx) => el.classList.toggle('hidden', (idx + 1) !== currentFormStep));
             document.getElementById('backBtn').classList.toggle('hidden', currentFormStep === 1);
             document.getElementById('nextBtn').classList.toggle('hidden', currentFormStep === totalSteps);
             document.getElementById('submitBtn').classList.toggle('hidden', currentFormStep !== totalSteps);
-            updateStepConstraints();
-            if (currentFormStep === totalSteps) updatePreview();
         }
-
-        function buildFullReview() {
-            const fields = [
-                { l: 'AB', v: 'ab' }, { l: 'Singles', v: 's' }, { l: 'Doubles', v: 'd' },
-                { l: 'Triples', v: 't' }, { l: 'Home Runs', v: 'hr' }, { l: 'Strikeouts', v: 'so' },
-                { l: 'Walks', v: 'bb' }, { l: 'HBP', v: 'hbp' }, { l: 'Runs', v: 'r' },
-                { l: 'RBIs', v: 'rbi' }, { l: 'SB', v: 'sb' }
-            ];
-            const grid = document.getElementById('fullReviewGrid');
-            grid.innerHTML = fields.map(f => `
-                <div class="flex justify-between border-b border-blue-100 pb-1">
-                    <span class="text-blue-400 font-bold uppercase text-[10px]">${f.l}</span>
-                    <strong class="text-blue-900">${document.getElementById(f.v).value}</strong>
-                </div>
-            `).join('');
-            const ab = parseInt(document.getElementById('ab').value) || 0;
-            const h = ['s', 'd', 't', 'hr'].reduce((s, id) => s + (parseInt(document.getElementById(id).value) || 0), 0);
-            const avg = ab > 0 ? (h / ab).toFixed(3).replace(/^0/, '') : ".000";
-            document.getElementById('reviewCalculated').innerHTML = `<div class="flex justify-between items-center"><span class="text-xs font-black text-blue-800 uppercase">Game AVG</span><span class="text-2xl font-black text-blue-600">${avg}</span></div>`;
-        }
-
-        function getLimits() {
-            const getVal = (id) => parseInt(document.getElementById(id)?.value) || 0;
-            const s = getVal('s'), d = getVal('d'), t = getVal('t'), hr = getVal('hr'), bb = getVal('bb'), hbp = getVal('hbp');
-            const hits = s + d + t + hr;
-            return { 
-                minAb: hits + parseInt(document.getElementById('so').value||0),
-                minR: hr, 
-                maxR: hits + bb + hbp, 
-                minRbi: hr, 
-                maxRbi: (hits * 3) + bb + hbp + hr, 
-                maxSb: ((s + bb + hbp) * 3) + (d * 2) + (t * 1) 
-            };
-        }
-
-        function getStatsFromForm() {
-            const getVal = (id) => parseInt(document.getElementById(id)?.value) || 0;
-            const ab = getVal('ab'), s = getVal('s'), d = getVal('d'), t = getVal('t'), hr = getVal('hr');
-            const so = getVal('so'), bb = getVal('bb'), hbp = getVal('hbp');
-            const r = getVal('r'), rbi = getVal('rbi'), sb = getVal('sb');
-            const hits = s + d + t + hr;
-            return { ab, s, d, t, hr, hits, so, bb, hbp, r, rbi, sb };
-        }
-
-        function calculate() {
-            const fmt = (v) => v.toFixed(3).replace(/^0/, '');
-            if (!gameData.length) {
-                ['avgDisplay','obpDisplay','slgDisplay','opsDisplay'].forEach(id => document.getElementById(id).textContent = '.000');
-                renderTable(); return;
-            }
-            const totals = gameData.reduce((a, g) => {
-                a.ab += g.ab; a.h += g.hits; a.s += g.s; a.d += g.d; a.t += g.t; a.hr += g.hr;
-                a.bb += g.bb; a.hbp += g.hbp; a.so += g.so;
-                return a;
-            }, { ab:0, h:0, s:0, d:0, t:0, hr:0, bb:0, hbp:0, so:0 });
-            const tb = totals.s + (totals.d * 2) + (totals.t * 3) + (totals.hr * 4);
-            const avg = totals.ab > 0 ? totals.h / totals.ab : 0;
-            const obp = (totals.ab + totals.bb + totals.hbp) > 0 ? (totals.h + totals.bb + totals.hbp) / (totals.ab + totals.bb + totals.hbp) : 0;
-            const slg = totals.ab > 0 ? tb / totals.ab : 0;
-            document.getElementById('avgDisplay').textContent = fmt(avg);
-            document.getElementById('obpDisplay').textContent = fmt(obp);
-            document.getElementById('slgDisplay').textContent = fmt(slg);
-            document.getElementById('opsDisplay').textContent = fmt(obp + slg);
-            updateCharts(totals);
-            renderTable();
-            localStorage.setItem('bb_stats_v14', JSON.stringify(gameData));
-        }
-
-        function updateCharts(totals) {
-            const sorted = [...gameData].sort((a,b) => new Date(a.date) - new Date(b.date));
-            let cH = 0, cAB = 0;
-            trendChart.data.labels = sorted.length ? sorted.map(g => g.date.split('-').slice(1).join('/')) : ['None'];
-            trendChart.data.datasets[0].data = sorted.length ? sorted.map(g => { cH += g.hits; cAB += g.ab; return cAB > 0 ? cH/cAB : 0; }) : [0];
-            trendChart.update();
-
-            distributionChart.data.datasets[0].data = [totals.s, totals.d, totals.t, totals.hr];
-            distributionChart.update();
-        }
-
-        function renderTable() {
-            const body = document.getElementById('statsTableBody');
-            body.innerHTML = [...gameData].sort((a,b) => new Date(b.date) - new Date(a.date)).map(g => `
-                <tr class="text-[11px] hover:bg-slate-50 transition">
-                    <td class="px-4 py-4 font-bold text-slate-700">${g.date}</td>
-                    <td class="px-4 py-4 text-slate-500">${g.opponent || '—'}</td>
-                    <td class="px-2 py-4 text-center">${g.ab}</td>
-                    <td class="px-2 py-4 text-center font-bold text-blue-600">${g.hits}</td>
-                    <td class="px-2 py-4 text-center">${g.bb}</td>
-                    <td class="px-2 py-4 text-center text-slate-400 italic">${g.so}</td>
-                    <td class="px-2 py-4 text-center font-black">${g.ab > 0 ? (g.hits/g.ab).toFixed(3).replace(/^0/,'') : '.000'}</td>
-                    <td class="px-4 py-3 text-right"><button onclick="deleteGame('${g.id}')" class="text-red-300 hover:text-red-500">×</button></td>
-                </tr>
-            `).join('');
-        }
-
-        function deleteGame(id) { if (confirm("Delete entry?")) { gameData = gameData.filter(g => String(g.id) !== String(id)); calculate(); } }
-        function clearAllData() { if (confirm("Wipe all?")) { gameData = []; calculate(); } }
-        
-        function exportData() {
-            if (!gameData.length) return;
-            const headers = Object.keys(gameData[0]);
-            const rows = gameData.map(g => headers.map(h => JSON.stringify(g[h] || "")).join(","));
-            const csv = [headers.join(","), ...rows].join("\n");
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href = url; a.download = `baseball_stats.csv`; a.click();
-        }
-        function handleCsvImport(event) { /* (Same CSV Logic) */ }
 
         document.getElementById('statsForm').onsubmit = (e) => {
             e.preventDefault();
-            gameData.push({ id: Date.now(), date: document.getElementById('date').value, opponent: document.getElementById('opponent').value, ...getStatsFromForm() });
+            const getV = (id) => parseInt(document.getElementById(id).value) || 0;
+            const entry = {
+                ID: Date.now(),
+                Date: document.getElementById('formDate').value,
+                Opponent: document.getElementById('formOpponent').value,
+                AB: getV('AB'), 
+                '1B': getV('1B'), 
+                '2B': getV('2B'), 
+                '3B': getV('3B'), 
+                HR: getV('HR'),
+                H: getV('1B')+getV('2B')+getV('3B')+getV('HR'),
+                SO: getV('SO'), 
+                BB: getV('BB'), 
+                R: getV('R'), 
+                RBI: getV('RBI'), 
+                SB: getV('SB'), 
+                HBP: getV('HBP'),
+                O: getV('AB') - (getV('1B')+getV('2B')+getV('3B')+getV('HR') + getV('SO')) // Derived Outs for manual entry
+            };
+            gameData.push(entry);
             calculate(); e.target.reset(); currentFormStep = 1; updateFormUI(); showPage('dashboard');
         };
 
         window.onload = () => {
-            document.getElementById('date').value = new Date().toISOString().split('T')[0];
-            const ctx1 = document.getElementById('performanceChart').getContext('2d');
-            trendChart = new Chart(ctx1, { type:'line', data:{labels:[], datasets:[{data:[], borderColor:'#2563eb', tension:0.4, fill:true, backgroundColor:'rgba(37,99,235,0.05)', pointRadius:0}]}, options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, max:1}, x:{grid:{display:false}}}}});
+            trendChart = new Chart(document.getElementById('performanceChart'), { 
+                type:'line', 
+                data:{ labels:[], datasets:[{ data:[], borderColor:'#2563eb', tension:0.4, fill:true, backgroundColor:'rgba(37,99,235,0.05)', pointRadius:2 }] }, 
+                options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{ y:{beginAtZero:true, max:1}, x:{grid:{display:false}} } }
+            });
+
             const ctx2 = document.getElementById('distributionChart').getContext('2d');
-            distributionChart = new Chart(ctx2, { type:'doughnut', data:{labels:['1B','2B','3B','HR'], datasets:[{data:[0,0,0,0], backgroundColor:['#3b82f6','#f43f5e','#eab308','#22c55e'], borderWidth:0}]}, options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}}, cutout:'70%'}});
-            const saved = localStorage.getItem('bb_stats_v14'); 
+            distributionChart = new Chart(ctx2, {
+                type:'doughnut',
+                data:{labels:['1B','2B','3B','HR'], datasets:[{data:[0,0,0,0], backgroundColor:['#3b82f6','#f43f5e','#eab308','#22c55e'], borderWidth:0}]},
+                options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}}, cutout:'70%'}
+            });
+
+            const saved = localStorage.getItem('deven.stat5.foo_v17'); 
             if (saved) gameData = JSON.parse(saved);
-            calculate(); updateFormUI();
+            calculate();
         };
     </script>
