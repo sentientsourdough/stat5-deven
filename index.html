@@ -427,18 +427,6 @@ layout: default
                 a.SO += (g.SO || 0);
                 return a;
             }, { AB:0, H:0, '1B':0, '2B':0, '3B':0, HR:0, BB:0, HBP:0, SO:0 });
-            /*
-            const pa = totals.AB + totals.BB + totals.HBP;
-            const tb = totals['1B'] + (totals['2B'] * 2) + (totals['3B'] * 3) + (totals.HR * 4);
-            const obp = pa > 0 ? ((totals.H + totals.BB + totals.HBP) / pa) : 0;
-            const slg = totals.AB > 0 ? (tb / totals.AB) : 0;
-            const fmt = (v) => v.toFixed(3).replace(/^0/, '');
-            
-            document.getElementById('avgDisplay').textContent = totals.AB > 0 ? fmt(totals.H / totals.AB) : ".000";
-            document.getElementById('obpDisplay').textContent = pa > 0 ? fmt(obp) : ".000";
-            document.getElementById('slgDisplay').textContent = totals.AB > 0 ? fmt(tb / totals.AB) : ".000";
-            document.getElementById('opsDisplay').textContent = fmt(obp + slg);
-            */
             const tbb = totals.BB + totals.HBP;
             const pa = totals.AB + tbb;
             const tb = totals['1B'] + (totals['2B'] * 2) + (totals['3B'] * 3) + (totals.HR * 4);
@@ -451,13 +439,11 @@ layout: default
             document.getElementById('slgDisplay').textContent = fmt(slg);
             document.getElementById('opsDisplay').textContent = fmt(obp + slg);
 
-            //updateCharts(totals);
             updateCharts(totals, tbb);
             renderTable();
-            localStorage.setItem('deven.stat5.foo_v17', JSON.stringify(gameData));
+            localStorage.setItem('deven.stat5.foo_v18', JSON.stringify(gameData));
         }
 
-        //function updateCharts(totals) {
         function updateCharts(totals, tbb) {
             // Season Performance Chart
             const sorted = [...gameData].sort((a,b) => new Date(a.Date) - new Date(b.Date));
@@ -475,7 +461,6 @@ layout: default
             distributionChart.update();
 
             // Discipline Chart
-            //disciplineChart.data.datasets[0].data = [totals.SO, totals.BB + totals.HBP];
             disciplineChart.data.datasets[0].data = [totals.SO, tbb];
             disciplineChart.update();
         }
@@ -687,8 +672,7 @@ layout: default
                 }
             });
 
-            //const ctx2 = document.getElementById('distributionChart').getContext('2d');
-            //distributionChart = new Chart(ctx2, {
+            //distributionChart = new Chart(document.getElementById('distributionChart').getContext('2d'), {
             distributionChart = new Chart(document.getElementById('distributionChart'), {
                 type:'doughnut',
                 data: {
@@ -725,7 +709,7 @@ layout: default
                 }
             });
 
-            const saved = localStorage.getItem('deven.stat5.foo_v17'); 
+            const saved = localStorage.getItem('deven.stat5.foo_v18'); 
             if (saved) gameData = JSON.parse(saved);
             calculate();
         };
