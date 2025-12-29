@@ -13,6 +13,4 @@ exclude:
   - .gitignore
   - node_modules
   - vendor
-  - index.html-20251226_153254.bak
-  - index.html.orig
-  - _config.yml.bak
+  - TODO.txt
