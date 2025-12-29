@@ -61,41 +61,34 @@ layout: default
 
                 <!-- Tab Menu -->
                 <div class="mb-6 border-b border-slate-200 flex gap-4 overflow-x-auto no-scrollbar">
-                    <button onclick="switchDashTab('performance')" id="dash-tab-performance" class="sub-tab-btn active">Performance</button>
-                    <button onclick="switchDashTab('distribution')" id="dash-tab-distribution" class="sub-tab-btn">Hit Distribution</button>
-                    <button onclick="switchDashTab('discipline')" id="dash-tab-discipline" class="sub-tab-btn">Discipline</button>
-                    <button onclick="switchDashTab('production')" id="dash-tab-production" class="sub-tab-btn">Production</button>
-                    <button onclick="switchDashTab('log')" id="dash-tab-log" class="sub-tab-btn">Game Log</button>
+                    <button onclick="switchDashTab('performance')" id="dash-tab-performance" class="sub-tab-btn active">Trend</button>
+                    <button onclick="switchDashTab('distribution')" id="dash-tab-distribution" class="sub-tab-btn">Breakdown</button>
+                    <button onclick="switchDashTab('log')" id="dash-tab-log" class="sub-tab-btn">Log</button>
                 </div>
 
-                <!-- PERFORMANCE CARD -->
+                <!-- TREND CARD -->
                 <div id="dash-section-performance" class="dash-section">
                     <div class="stats-card mb-8">
-                        <h3 class="text-sm font-bold mb-6 text-slate-500 uppercase tracking-widest">Season Performance</h3>
+                        <h3 class="text-sm font-bold mb-6 text-slate-500 tracking-widest">Moving Averages</h3>
                         <div class="h-64"><canvas id="performanceChart"></canvas></div>
                     </div>
                 </div>
 
-                <!-- DISTRIBUTION CARD -->
+                <!-- BREAKDOWN CARD -->
                 <div id="dash-section-distribution" class="dash-section hidden">
+                    <!-- Hit Distribution Chart -->
                     <div class="stats-card mb-8">
-                        <h3 class="text-sm font-bold mb-6 text-slate-500 uppercase tracking-widest">Hit Type Breakdown</h3>
+                        <h3 class="text-sm font-bold mb-6 text-slate-500 tracking-widest">Hit Distribution</h3>
                         <div class="h-64"><canvas id="distributionChart"></canvas></div>
                     </div>
-                </div>
-
-                <!-- DISCIPLINE CARD -->
-                <div id="dash-section-discipline" class="dash-section hidden">
+                    <!-- Plate Discipline Chart -->
                     <div class="stats-card mb-8">
-                        <h3 class="text-sm font-bold mb-6 text-slate-500 uppercase tracking-widest">SO vs. Walk Ratio</h3>
+                        <h3 class="text-sm font-bold mb-6 text-slate-500 tracking-widest">Plate Discipline</h3>
                         <div class="h-64"><canvas id="disciplineChart"></canvas></div>
                     </div>
-                </div>
-
-                <!-- PRODUCTION CARD -->
-                <div id="dash-section-production" class="dash-section hidden">
+                    <!-- Run Production Chart -->
                     <div class="stats-card mb-8">
-                        <h3 class="text-sm font-bold mb-6 text-slate-500 uppercase tracking-widest">Run Production (R vs RBI)</h3>
+                        <h3 class="text-sm font-bold mb-6 text-slate-500 tracking-widest">Run Production</h3>
                         <div class="h-64"><canvas id="productionChart"></canvas></div>
                     </div>
                 </div>
@@ -439,7 +432,7 @@ layout: default
             renderTable();
             localStorage.setItem('deven.stat5.foo_v18', JSON.stringify(gameData));
         }
-
+/*
         function updateCharts(totals, tbb) {
             // Trend Chart
             const sorted = [...gameData].sort((a,b) => new Date(a.Date) - new Date(b.Date));
@@ -450,6 +443,64 @@ layout: default
                 cAB += (g.AB || 0); 
                 return cAB > 0 ? cH/cAB : 0; 
             });
+            trendChart.update();
+
+            // Distribution Chart
+            distributionChart.data.datasets[0].data = [totals['1B'], totals['2B'], totals['3B'], totals.HR];
+            distributionChart.update();
+
+            // Discipline Chart
+            disciplineChart.data.datasets[0].data = [totals.SO, tbb];
+            disciplineChart.update();
+
+            // Production Chart
+            productionChart.data.datasets[0].data = [totals.R, totals.RBI];
+            productionChart.update();
+        }
+*/
+        function updateCharts(totals, tbb) {
+            const sorted = [...gameData].sort((a,b) => new Date(a.Date) - new Date(b.Date));
+
+            // Trend Chart (AVG + OPS)
+            trendChart.data.labels = sorted.map(g => g.Date.split('-').slice(1).join('/'));
+
+            // Calculate rolling stats
+            let cAB = 0, cH = 0, cBB = 0, cHBP = 0, cTB = 0;
+            const avgData = [];
+            const opsData = [];
+
+            sorted.forEach(g => {
+                cAB += g.AB; cH += g.H; cBB += g.BB; cHBP += g.HBP;
+                const gTB = (g['1B'] + g['2B']*2 + g['3B']*3 + g.HR*4);
+                cTB += gTB;
+
+                const rollAvg = cAB > 0 ? cH/cAB : 0;
+                const rollObp = (cAB+cBB+cHBP) > 0 ? (cH+cBB+cHBP)/(cAB+cBB+cHBP) : 0;
+                const rollSlg = cAB > 0 ? cTB/cAB : 0;
+
+                avgData.push(rollAvg);
+                opsData.push(rollObp + rollSlg);
+            });
+
+            trendChart.data.datasets = [
+                {
+                    label: 'AVG',
+                    data: avgData,
+                    borderColor: '#3b82f6', // Blue-500
+                    backgroundColor: 'rgba(59, 130, 246, 0.05)',
+                    tension: 0.3,
+                    yAxisID: 'y'
+                },
+                {
+                    label: 'OPS',
+                    data: opsData,
+                    borderColor: '#22c55e', // Green-500
+                    borderDash: [5, 5],
+                    tension: 0.3,
+                    pointRadius: 0,
+                    yAxisID: 'y'
+                }
+            ];
             trendChart.update();
 
             // Distribution Chart
@@ -674,25 +725,14 @@ layout: default
         window.onload = () => {
             // 1. Performance (Line)
             const ctx1 = document.getElementById('performanceChart').getContext('2d');
-            trendChart = new Chart(ctx1, { 
-                type: 'line', 
-                data: {
-                    labels: [],
-                    datasets: [{
-                        data: [],
-                        borderColor: '#2563eb',
-                        tension: 0.4,
-                        fill: true,
-                        backgroundColor: 'rgba(37,99,235,0.05)',
-                        pointRadius: 2
-                    }]
-                }, 
+            trendChart = new Chart(ctx1, {
+                type:'line',
+                data: { labels:[], datasets:[] },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true, max: 1 }, x: { grid: { display: false } } }
-                }
+                    responsive:true,
+                    maintainAspectRatio:false,
+                    plugins: { legend: { display:true, position:'bottom' } },
+                    scales:{ y: { beginAtZero: true, max: 2 }, x: { grid: { display: false } } } }
             });
 
             // 2. Distribution (Doughnut)
@@ -720,7 +760,7 @@ layout: default
             disciplineChart = new Chart(ctx3, {
                 type: 'bar',
                 data: {
-                    labels: ['Strikeouts (SO)','Walks (BB+HBP)'],
+                    labels: ['SO','BB+HBP'],
                     datasets: [{
                         data: [0,0],
                         backgroundColor: ['#94a3b8','#3b82f6'],
@@ -740,7 +780,7 @@ layout: default
             productionChart = new Chart(ctx4, {
                 type: 'bar',
                 data: {
-                    labels: ['Runs Scored (R)','Runs Batted In (RBI)'],
+                    labels: ['R','RBI'],
                     datasets: [{
                         label: 'Total',
                         data: [0, 0],
