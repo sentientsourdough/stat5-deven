@@ -18,5 +18,6 @@ thumbs.db
 *.bak
 *.old
 *.new
+*.swp
 
 TODO.txt
