@@ -63,6 +63,7 @@ layout: default
                 <div class="mb-6 border-b border-slate-200 flex gap-4 overflow-x-auto no-scrollbar">
                     <button onclick="switchDashTab('performance')" id="dash-tab-performance" class="sub-tab-btn active">Performance</button>
                     <button onclick="switchDashTab('distribution')" id="dash-tab-distribution" class="sub-tab-btn">Hit Distribution</button>
+                    <button onclick="switchDashTab('discipline')" id="dash-tab-discipline" class="sub-tab-btn">Discipline</button>
                     <button onclick="switchDashTab('log')" id="dash-tab-log" class="sub-tab-btn">Game Log</button>
                 </div>
 
@@ -79,6 +80,14 @@ layout: default
                     <div class="stats-card mb-8">
                         <h3 class="text-sm font-bold mb-6 text-slate-500 uppercase tracking-widest">Hit Type Breakdown</h3>
                         <div class="h-64"><canvas id="distributionChart"></canvas></div>
+                    </div>
+                </div>
+
+                <!-- DISCIPLINE CARD -->
+                <div id="dash-section-discipline" class="dash-section hidden">
+                    <div class="stats-card mb-8">
+                        <h3 class="text-sm font-bold mb-6 text-slate-500 uppercase tracking-widest">SO vs. Walk Ratio</h3>
+                        <div class="h-64"><canvas id="disciplineChart"></canvas></div>
                     </div>
                 </div>
 
@@ -356,6 +365,7 @@ layout: default
         let gameData = [];
         let trendChart;
         let distributionChart;
+        let disciplineChart;
         let currentFormStep = 1;
         const totalSteps = 12;
         
@@ -373,7 +383,7 @@ layout: default
         function showPage(pageId) {
             document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
             document.getElementById(pageId + 'Page').classList.remove('hidden');
-            const titles = { dashboard: "Dashboard", liveGame: "Live Game Tracker", addData: "Previous Game", dataManagement: "Data", glossary: "Glossary" };
+            const titles = { dashboard: "Dashboard", liveGame: "Live Game", addData: "Previous Game", dataManagement: "Data", glossary: "Glossary" };
             document.getElementById('pageTitle').textContent = titles[pageId] || "App";
             
             if (pageId === 'liveGame') initLiveGame();
@@ -392,7 +402,7 @@ layout: default
                 ['avgDisplay','obpDisplay','slgDisplay','opsDisplay'].forEach(id => document.getElementById(id).textContent = '.000');
                 renderTable(); return;
             }
-            
+            /*
             const totals = gameData.reduce((a, g) => {
                 a.AB += (g.AB || 0); 
                 a.H += (g.H || 0); 
@@ -404,29 +414,52 @@ layout: default
                 a.HBP += (g.HBP || 0);
                 return a;
             }, { AB:0, H:0, '1B':0, '2B':0, '3B':0, HR:0, BB:0, HBP:0 });
-
+            */
+            const totals = gameData.reduce((a, g) => {
+                a.AB += (g.AB || 0); 
+                a.H += (g.H || 0); 
+                a['1B'] += (g['1B'] || 0); 
+                a['2B'] += (g['2B'] || 0); 
+                a['3B'] += (g['3B'] || 0); 
+                a.HR += (g.HR || 0); 
+                a.BB += (g.BB || 0); 
+                a.HBP += (g.HBP || 0);
+                a.SO += (g.SO || 0);
+                return a;
+            }, { AB:0, H:0, '1B':0, '2B':0, '3B':0, HR:0, BB:0, HBP:0, SO:0 });
+            /*
+            const pa = totals.AB + totals.BB + totals.HBP;
             const tb = totals['1B'] + (totals['2B'] * 2) + (totals['3B'] * 3) + (totals.HR * 4);
+            const obp = pa > 0 ? ((totals.H + totals.BB + totals.HBP) / pa) : 0;
+            const slg = totals.AB > 0 ? (tb / totals.AB) : 0;
             const fmt = (v) => v.toFixed(3).replace(/^0/, '');
             
             document.getElementById('avgDisplay').textContent = totals.AB > 0 ? fmt(totals.H / totals.AB) : ".000";
-            document.getElementById('obpDisplay').textContent = (totals.AB + totals.BB + totals.HBP) > 0 ? fmt((totals.H + totals.BB + totals.HBP) / (totals.AB + totals.BB + totals.HBP)) : ".000";
+            document.getElementById('obpDisplay').textContent = pa > 0 ? fmt(obp) : ".000";
             document.getElementById('slgDisplay').textContent = totals.AB > 0 ? fmt(tb / totals.AB) : ".000";
-            
+            document.getElementById('opsDisplay').textContent = fmt(obp + slg);
+            */
+            const tbb = totals.BB + totals.HBP;
+            const pa = totals.AB + tbb;
+            const tb = totals['1B'] + (totals['2B'] * 2) + (totals['3B'] * 3) + (totals.HR * 4);
+            const obp = pa > 0 ? ((totals.H + tbb) / pa) : 0;
             const slg = totals.AB > 0 ? (tb / totals.AB) : 0;
-            const obp = (totals.AB + totals.BB + totals.HBP) > 0 ? ((totals.H + totals.BB + totals.HBP) / (totals.AB + totals.BB + totals.HBP)) : 0;
+            const fmt = (v) => v.toFixed(3).replace(/^0/, '');
+
+            document.getElementById('avgDisplay').textContent = totals.AB > 0 ? fmt(totals.H / totals.AB) : ".000";
+            document.getElementById('obpDisplay').textContent = fmt(obp);
+            document.getElementById('slgDisplay').textContent = fmt(slg);
             document.getElementById('opsDisplay').textContent = fmt(obp + slg);
 
-            // UPDATED
-            //updateCharts();
-            updateCharts(totals);
+            //updateCharts(totals);
+            updateCharts(totals, tbb);
             renderTable();
             localStorage.setItem('deven.stat5.foo_v17', JSON.stringify(gameData));
         }
 
-        //function updateCharts() {
-        // NEW, UPDATED
-        function updateCharts(totals) {
-            // Season Performance Chart:
+        //function updateCharts(totals) {
+        function updateCharts(totals, tbb) {
+            // Season Performance Chart
             const sorted = [...gameData].sort((a,b) => new Date(a.Date) - new Date(b.Date));
             let cH = 0, cAB = 0;
             trendChart.data.labels = sorted.map(g => g.Date.split('-').slice(1).join('/'));
@@ -437,9 +470,14 @@ layout: default
             });
             trendChart.update();
 
-            // Distribution Chart (NEW, UPDATED):
+            // Distribution Chart
             distributionChart.data.datasets[0].data = [totals['1B'], totals['2B'], totals['3B'], totals.HR];
             distributionChart.update();
+
+            // Discipline Chart
+            //disciplineChart.data.datasets[0].data = [totals.SO, totals.BB + totals.HBP];
+            disciplineChart.data.datasets[0].data = [totals.SO, tbb];
+            disciplineChart.update();
         }
 
         function renderTable() {
@@ -459,7 +497,7 @@ layout: default
         }
 
         function deleteGame(id) { if (confirm("Delete game?")) { gameData = gameData.filter(g => String(g.ID) !== String(id)); calculate(); } }
-        function clearAllData() { if (confirm("Delete ALL site data? It's recommended to export a .csv before continuing.")) { gameData = []; calculate(); } }
+        function clearAllData() { if (confirm("Delete ALL site data? WARNING: It's recommended to export a .csv before continuing.")) { gameData = []; calculate(); } }
 
         function exportData() {
             if (!gameData.length) return;
@@ -627,15 +665,64 @@ layout: default
         window.onload = () => {
             trendChart = new Chart(document.getElementById('performanceChart'), { 
                 type:'line', 
-                data:{ labels:[], datasets:[{ data:[], borderColor:'#2563eb', tension:0.4, fill:true, backgroundColor:'rgba(37,99,235,0.05)', pointRadius:2 }] }, 
-                options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{ y:{beginAtZero:true, max:1}, x:{grid:{display:false}} } }
+                data: {
+                    labels:[],
+                    datasets:[{
+                        data:[],
+                        borderColor:'#2563eb',
+                        tension:0.4,
+                        fill:true,
+                        backgroundColor:'rgba(37,99,235,0.05)',
+                        pointRadius:2
+                    }]
+                }, 
+                options: {
+                    responsive:true,
+                    maintainAspectRatio:false,
+                    plugins: { legend:{display:false} },
+                    scales: {
+                        y: { beginAtZero:true, max:1 },
+                        x: { grid:{display:false} }
+                    }
+                }
             });
 
-            const ctx2 = document.getElementById('distributionChart').getContext('2d');
-            distributionChart = new Chart(ctx2, {
+            //const ctx2 = document.getElementById('distributionChart').getContext('2d');
+            //distributionChart = new Chart(ctx2, {
+            distributionChart = new Chart(document.getElementById('distributionChart'), {
                 type:'doughnut',
-                data:{labels:['1B','2B','3B','HR'], datasets:[{data:[0,0,0,0], backgroundColor:['#3b82f6','#f43f5e','#eab308','#22c55e'], borderWidth:0}]},
-                options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}}, cutout:'70%'}
+                data: {
+                    labels:['1B','2B','3B','HR'],
+                    datasets:[{
+                        data:[0,0,0,0],
+                        backgroundColor:['#3b82f6','#f43f5e','#eab308','#22c55e'],
+                        borderWidth:0
+                    }]
+                },
+                options: {
+                    responsive:true,
+                    maintainAspectRatio:false,
+                    plugins: { legend:{position:'bottom'} },
+                    cutout:'70%'
+                }
+            });
+
+            disciplineChart = new Chart(document.getElementById('disciplineChart'), {
+                type:'bar',
+                data: {
+                    labels:['Strikeouts (SO)','Walks (BB+HBP)'],
+                    datasets:[{
+                        data:[0,0],
+                        backgroundColor:['#94a3b8','#3b82f6'],
+                        borderRadius:8
+                    }]
+                },
+                options: {
+                    responsive:true,
+                    maintainAspectRatio:false,
+                    plugins: { legend:{display:false} },
+                    scales: { y:{beginAtZero:true}, x:{grid:{display:false}} }
+                }
             });
 
             const saved = localStorage.getItem('deven.stat5.foo_v17'); 
