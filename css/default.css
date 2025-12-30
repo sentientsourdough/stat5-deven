@@ -1,0 +1,82 @@
+.stats-card { background: white; padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+input[type=number] { -moz-appearance: textfield; }
+::placeholder { color: #9ca3af; opacity: 1; }
+th, td { white-space: nowrap; }
+
+.stepper-btn {
+    width: 3.5rem;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f3f4f6;
+    border-radius: 9999px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #1e3a8a;
+    transition: all 0.2s;
+    user-select: none;
+}
+.stepper-btn:hover { background-color: #e5e7eb; }
+.stepper-btn:active { transform: scale(0.9); }
+.stepper-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+#navSidebar {
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(-100%);
+}
+#navSidebar.active {
+    transform: translateX(0);
+}
+
+#overlay {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-in-out;
+}
+#overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.sub-tab-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #94a3b8;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.sub-tab-btn.active {
+    color: #1e293b;
+    border-bottom-color: #1e293b;
+}
+
+/* Live Game Specifics */
+.ab-btn {
+    padding: 1.5rem 0;
+    border-radius: 0.75rem;
+    font-weight: 900;
+    font-size: 1.25rem;
+    transition: all 0.1s;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.1);
+}
+.ab-btn:active { transform: translateY(2px); box-shadow: none; }
+
+.hit-btn { background-color: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+.hit-btn:hover { background-color: #bfdbfe; }
+
+.walk-btn { background-color: #f3f4f6; color: #374151; border: 1px solid #e5e7eb; }
+.walk-btn:hover { background-color: #e5e7eb; }
+
+.out-btn { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+.out-btn:hover { background-color: #fecaca; }
+
+.live-step { animation: fadeIn 0.3s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }

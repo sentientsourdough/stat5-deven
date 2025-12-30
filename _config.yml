@@ -14,3 +14,4 @@ exclude:
   - node_modules
   - vendor
   - TODO.txt
+  - _layouts/
