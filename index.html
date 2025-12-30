@@ -1,811 +1,802 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deven's Baseball Stats</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" htref="css/default.css" />
-</head>
-<body class="bg-gray-100 min-h-screen font-sans text-slate-900 overflow-x-hidden">
-    <div id="overlay" onclick="closeAllMenus()" class="fixed inset-0 bg-slate-900/50 z-[60]"></div>
+---
+layout: default
+---
 
-    <!-- Navigation Sidebar -->
-    <aside id="navSidebar" class="fixed top-0 left-0 h-full w-64 bg-white z-[70] shadow-2xl p-6">
-        <div class="flex items-center justify-between mb-8">
-            <h2 class="text-lg font-black text-blue-900 tracking-tight">Menu</h2>
-            <button onclick="toggleNav(false)" class="p-2 hover:bg-slate-100 rounded-full transition">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
+<div id="overlay" onclick="closeAllMenus()" class="fixed inset-0 bg-slate-900/50 z-[60]"></div>
+
+<!-- Navigation Sidebar -->
+<aside id="navSidebar" class="fixed top-0 left-0 h-full w-64 bg-white z-[70] shadow-2xl p-6">
+    <div class="flex items-center justify-between mb-8">
+        <h2 class="text-lg font-black text-blue-900 tracking-tight">Menu</h2>
+        <button onclick="toggleNav(false)" class="p-2 hover:bg-slate-100 rounded-full transition">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+    </div>
+    <nav class="flex flex-col gap-2">
+        <button onclick="showPage('dashboard')" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition text-left">Dashboard</button>
+        <button onclick="showPage('liveGame')" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition text-left">
+            <span class="text-red-500 mr-1">●</span> Live Game
+        </button>
+        <button onclick="showPage('addData')" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition text-left">Previous Game</button>
+        <button onclick="showPage('dataManagement')" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition text-left">Data</button>
+        <button onclick="showPage('glossary')" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition text-left">Glossary</button>
+    </nav>
+</aside>
+
+<div class="max-w-6xl mx-auto">
+    <header class="bg-white border-b sticky top-0 z-40 px-4 md:px-8">
+        <div class="flex items-center justify-between py-4">
+            <div class="flex items-center gap-4">
+                <button onclick="toggleNav(true)" class="p-2 hover:bg-slate-100 rounded-lg transition text-slate-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                <h1 class="text-xl font-black text-blue-900 tracking-tight">Deven's Baseball Stats</h1>
+            </div>
         </div>
-        <nav class="flex flex-col gap-2">
-            <button onclick="showPage('dashboard')" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition text-left">Dashboard</button>
-            <button onclick="showPage('liveGame')" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition text-left">
-                <span class="text-red-500 mr-1">●</span> Live Game
-            </button>
-            <button onclick="showPage('addData')" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition text-left">Previous Game</button>
-            <button onclick="showPage('dataManagement')" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition text-left">Data</button>
-            <button onclick="showPage('glossary')" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition text-left">Glossary</button>
-        </nav>
-    </aside>
+    </header>
 
-    <div class="max-w-6xl mx-auto">
-        <header class="bg-white border-b sticky top-0 z-40 px-4 md:px-8">
-            <div class="flex items-center justify-between py-4">
-                <div class="flex items-center gap-4">
-                    <button onclick="toggleNav(true)" class="p-2 hover:bg-slate-100 rounded-lg transition text-slate-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-                    </button>
-                    <h1 class="text-xl font-black text-blue-900 tracking-tight">Deven's Baseball Stats</h1>
+    <main class="p-4 md:p-8">
+        <h2 id="pageTitle" class="text-2xl font-bold mb-6 text-slate-800">Dashboard</h2>
+
+        <!-- DASHBOARD -->
+        <div id="dashboardPage" class="page-view">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div class="stats-card border-t-4 border-blue-500">
+                    <p class="text-slate-400 text-[10px] uppercase font-black tracking-wider">AVG</p>
+                    <p id="avgDisplay" class="text-3xl font-black text-slate-800">.000</p>
                 </div>
-            </div>
-        </header>
-
-        <main class="p-4 md:p-8">
-            <h2 id="pageTitle" class="text-2xl font-bold mb-6 text-slate-800">Dashboard</h2>
-
-            <!-- DASHBOARD -->
-            <div id="dashboardPage" class="page-view">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                    <div class="stats-card border-t-4 border-blue-500">
-                        <p class="text-slate-400 text-[10px] uppercase font-black tracking-wider">AVG</p>
-                        <p id="avgDisplay" class="text-3xl font-black text-slate-800">.000</p>
-                    </div>
-                    <div class="stats-card border-t-4 border-red-500">
-                        <p class="text-slate-400 text-[10px] uppercase font-black tracking-wider">OBP</p>
-                        <p id="obpDisplay" class="text-3xl font-black text-slate-800">.000</p>
-                    </div>
-                    <div class="stats-card border-t-4 border-yellow-500">
-                        <p class="text-slate-400 text-[10px] uppercase font-black tracking-wider">SLG</p>
-                        <p id="slgDisplay" class="text-3xl font-black text-slate-800">.000</p>
-                    </div>
-                    <div class="stats-card border-t-4 border-green-500">
-                        <p class="text-slate-400 text-[10px] uppercase font-black tracking-wider">OPS</p>
-                        <p id="opsDisplay" class="text-3xl font-black text-slate-800">.000</p>
-                    </div>
+                <div class="stats-card border-t-4 border-red-500">
+                    <p class="text-slate-400 text-[10px] uppercase font-black tracking-wider">OBP</p>
+                    <p id="obpDisplay" class="text-3xl font-black text-slate-800">.000</p>
                 </div>
-
-                <!-- Tab Menu -->
-                <div class="mb-6 border-b border-slate-200 flex gap-4 overflow-x-auto no-scrollbar">
-                    <button onclick="switchDashTab('performance')" id="dash-tab-performance" class="sub-tab-btn active">Trend</button>
-                    <button onclick="switchDashTab('distribution')" id="dash-tab-distribution" class="sub-tab-btn">Breakdown</button>
-                    <button onclick="switchDashTab('log')" id="dash-tab-log" class="sub-tab-btn">Game Log</button>
+                <div class="stats-card border-t-4 border-yellow-500">
+                    <p class="text-slate-400 text-[10px] uppercase font-black tracking-wider">SLG</p>
+                    <p id="slgDisplay" class="text-3xl font-black text-slate-800">.000</p>
                 </div>
-
-                <!-- TREND CARD -->
-                <div id="dash-section-performance" class="dash-section">
-                    <div class="stats-card mb-8">
-                        <h3 class="text-sm font-bold mb-6 text-slate-500 tracking-widest">Moving Averages</h3>
-                        <div class="h-64"><canvas id="performanceChart"></canvas></div>
-                    </div>
-                </div>
-
-                <!-- BREAKDOWN CARD -->
-                <div id="dash-section-distribution" class="dash-section hidden">
-                    <!-- Hit Distribution Chart -->
-                    <div class="stats-card mb-8">
-                        <h3 class="text-sm font-bold mb-6 text-slate-500 tracking-widest">Hit Distribution</h3>
-                        <div class="h-64"><canvas id="distributionChart"></canvas></div>
-                    </div>
-                    <!-- Plate Discipline Chart -->
-                    <div class="stats-card mb-8">
-                        <h3 class="text-sm font-bold mb-6 text-slate-500 tracking-widest">Plate Discipline</h3>
-                        <div class="h-64"><canvas id="disciplineChart"></canvas></div>
-                    </div>
-                    <!-- Run Production Chart -->
-                    <div class="stats-card mb-8">
-                        <h3 class="text-sm font-bold mb-6 text-slate-500 tracking-widest">Run Production</h3>
-                        <div class="h-64"><canvas id="productionChart"></canvas></div>
-                    </div>
-                </div>
-
-                <!-- GAME LOG CARD -->
-                <div id="dash-section-log" class="dash-section hidden">
-                    <div class="stats-card overflow-x-auto mb-8">
-                        <table class="min-w-full divide-y divide-slate-100">
-                            <thead>
-                                <tr class="text-left text-[10px] font-black text-slate-400 uppercase tracking-wider">
-                                    <th class="px-4 py-3">Date</th>
-                                    <th class="px-4 py-3">Opponent</th>
-                                    <th class="px-2 py-3 text-center">AB</th>
-                                    <th class="px-2 py-3 text-center">H</th>
-                                    <th class="px-2 py-3 text-center">BB</th>
-                                    <th class="px-2 py-3 text-center">SO</th>
-                                    <th class="px-2 py-3 text-center">AVG</th>
-                                    <th class="px-4 py-3"></th>
-                                </tr>
-                            </thead>
-                            <tbody id="statsTableBody" class="divide-y divide-slate-50"></tbody>
-                        </table>
-                    </div>
+                <div class="stats-card border-t-4 border-green-500">
+                    <p class="text-slate-400 text-[10px] uppercase font-black tracking-wider">OPS</p>
+                    <p id="opsDisplay" class="text-3xl font-black text-slate-800">.000</p>
                 </div>
             </div>
 
-            <!-- LIVE GAME PAGE -->
-            <div id="liveGamePage" class="page-view hidden max-w-lg mx-auto">
-                <div class="stats-card mb-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <div class="w-full mr-4">
-                            <label class="block text-[11px] font-black text-slate-400 uppercase tracking-wider mb-1">Opponent</label>
-                            <input type="text" id="liveOpponent" class="w-full bg-slate-50 border border-slate-200 rounded p-2 text-sm text-slate-800" placeholder="Team Name">
-                        </div>
-                        <div class="text-right whitespace-nowrap">
-                            <label class="block text-[11px] font-black text-slate-400 uppercase tracking-wider mb-1">Date</label>
-                            <p class="text-sm font-bold text-slate-800" id="liveDateDisplay"></p>
-                        </div>
+            <!-- Tab Menu -->
+            <div class="mb-6 border-b border-slate-200 flex gap-4 overflow-x-auto no-scrollbar">
+                <button onclick="switchDashTab('performance')" id="dash-tab-performance" class="sub-tab-btn active">Trend</button>
+                <button onclick="switchDashTab('distribution')" id="dash-tab-distribution" class="sub-tab-btn">Breakdown</button>
+                <button onclick="switchDashTab('log')" id="dash-tab-log" class="sub-tab-btn">Game Log</button>
+            </div>
+
+            <!-- TREND CARD -->
+            <div id="dash-section-performance" class="dash-section">
+                <div class="stats-card mb-8">
+                    <h3 class="text-sm font-bold mb-6 text-slate-500 tracking-widest">Moving Averages</h3>
+                    <div class="h-64"><canvas id="performanceChart"></canvas></div>
+                </div>
+            </div>
+
+            <!-- BREAKDOWN CARD -->
+            <div id="dash-section-distribution" class="dash-section hidden">
+                <!-- Hit Distribution Chart -->
+                <div class="stats-card mb-8">
+                    <h3 class="text-sm font-bold mb-6 text-slate-500 tracking-widest">Hit Distribution</h3>
+                    <div class="h-64"><canvas id="distributionChart"></canvas></div>
+                </div>
+                <!-- Plate Discipline Chart -->
+                <div class="stats-card mb-8">
+                    <h3 class="text-sm font-bold mb-6 text-slate-500 tracking-widest">Plate Discipline</h3>
+                    <div class="h-64"><canvas id="disciplineChart"></canvas></div>
+                </div>
+                <!-- Run Production Chart -->
+                <div class="stats-card mb-8">
+                    <h3 class="text-sm font-bold mb-6 text-slate-500 tracking-widest">Run Production</h3>
+                    <div class="h-64"><canvas id="productionChart"></canvas></div>
+                </div>
+            </div>
+
+            <!-- GAME LOG CARD -->
+            <div id="dash-section-log" class="dash-section hidden">
+                <div class="stats-card overflow-x-auto mb-8">
+                    <table class="min-w-full divide-y divide-slate-100">
+                        <thead>
+                            <tr class="text-left text-[10px] font-black text-slate-400 uppercase tracking-wider">
+                                <th class="px-4 py-3">Date</th>
+                                <th class="px-4 py-3">Opponent</th>
+                                <th class="px-2 py-3 text-center">AB</th>
+                                <th class="px-2 py-3 text-center">H</th>
+                                <th class="px-2 py-3 text-center">BB</th>
+                                <th class="px-2 py-3 text-center">SO</th>
+                                <th class="px-2 py-3 text-center">AVG</th>
+                                <th class="px-4 py-3"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="statsTableBody" class="divide-y divide-slate-50"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- LIVE GAME PAGE -->
+        <div id="liveGamePage" class="page-view hidden max-w-lg mx-auto">
+            <div class="stats-card mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="w-full mr-4">
+                        <label class="block text-[11px] font-black text-slate-400 uppercase tracking-wider mb-1">Opponent</label>
+                        <input type="text" id="liveOpponent" class="w-full bg-slate-50 border border-slate-200 rounded p-2 text-sm text-slate-800" placeholder="Team Name">
+                    </div>
+                    <div class="text-right whitespace-nowrap">
+                        <label class="block text-[11px] font-black text-slate-400 uppercase tracking-wider mb-1">Date</label>
+                        <p class="text-sm font-bold text-slate-800" id="liveDateDisplay"></p>
+                    </div>
+                </div>
+                
+                <div class="bg-blue-900 rounded-xl p-4 text-white grid grid-cols-4 gap-2 text-center mb-2 shadow-lg">
+                    <div><p class="text-[10px] opacity-60 uppercase">AB</p><p id="liveABDisplay" class="text-2xl font-black">0</p></div>
+                    <div><p class="text-[10px] opacity-60 uppercase">H</p><p id="liveHDisplay" class="text-2xl font-black">0</p></div>
+                    <div><p class="text-[10px] opacity-60 uppercase">RBI</p><p id="liveRBIDisplay" class="text-2xl font-black">0</p></div>
+                    <div><p class="text-[10px] opacity-60 uppercase">R</p><p id="liveRDisplay" class="text-2xl font-black">0</p></div>
+                </div>
+            </div>
+
+            <h2 id="currentAB" class="text-center font-black text-slate-400">At-bat</h2>
+            <div id="liveKeypad" class="grid grid-cols-2 gap-3 mb-6 transition-all duration-300">
+                <button onclick="handleLiveResult('1B')" class="ab-btn hit-btn">1B</button>
+                <button onclick="handleLiveResult('2B')" class="ab-btn hit-btn">2B</button>
+                <button onclick="handleLiveResult('3B')" class="ab-btn hit-btn">3B</button>
+                <button onclick="handleLiveResult('HR')" class="ab-btn hit-btn bg-blue-600 text-white hover:bg-blue-700 border-none">HR</button>
+                <button onclick="handleLiveResult('BB')" class="ab-btn walk-btn">BB</button>
+                <button onclick="handleLiveResult('HBP')" class="ab-btn walk-btn">HBP</button>
+                <button onclick="handleLiveResult('SO')" class="ab-btn out-btn">SO</button>
+                <button onclick="handleLiveResult('O')" class="ab-btn out-btn">O</button>
+            </div>
+
+            <div id="liveABContext" class="hidden stats-card bg-slate-50 border border-slate-200 mb-6">
+                <div id="liveStepRBI" class="live-step hidden">
+                    <h3 class="text-center font-black text-blue-900 tracking-wider mb-4">RBI</h3>
+                    <div class="flex items-center justify-center gap-6 mb-6">
+                        <button onclick="adjustLiveContext('RBI', -1)" class="stepper-btn bg-white border border-slate-200">-</button>
+                        <span id="liveContextRBI" class="text-3xl font-black text-slate-800">0</span>
+                        <button onclick="adjustLiveContext('RBI', 1)" class="stepper-btn bg-white border border-slate-200">+</button>
+                    </div>
+                    <div class="flex gap-2">
+                         <button onclick="cancelLiveAB()" class="w-1/3 py-3 rounded-xl bg-slate-200 text-slate-600 font-bold">Cancel</button>
+                         <button onclick="nextLiveStep(2)" class="w-2/3 py-3 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-lg">Next</button>
+                    </div>
+                </div>
+
+                <div id="liveStepSB" class="live-step hidden">
+                    <h3 class="text-center font-black text-blue-900 tracking-wider mb-4">SB</h3>
+                    <div class="flex items-center justify-center gap-6 mb-6">
+                        <button onclick="adjustLiveContext('SB', -1)" class="stepper-btn bg-white border border-slate-200">-</button>
+                        <span id="liveContextSB" class="text-3xl font-black text-slate-800">0</span>
+                        <button onclick="adjustLiveContext('SB', 1)" class="stepper-btn bg-white border border-slate-200">+</button>
+                    </div>
+                    <div class="flex gap-2">
+                         <button onclick="nextLiveStep(1)" class="w-1/3 py-3 rounded-xl bg-slate-200 text-slate-600 font-bold">Back</button>
+                         <button onclick="nextLiveStep(3)" class="w-2/3 py-3 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-lg">Next</button>
+                    </div>
+                </div>
+
+                <div id="liveStepRun" class="live-step hidden">
+                    <h3 class="text-center font-black text-blue-900 tracking-wider mb-4">Scored?</h3>
+                    <div class="flex gap-4 mb-6">
+                        <button onclick="setLiveRun(false); nextLiveStep(4)" class="w-1/2 py-4 rounded-xl bg-slate-200 text-slate-600 font-black hover:bg-slate-300">No</button>
+                        <button onclick="setLiveRun(true); nextLiveStep(4)" class="w-1/2 py-4 rounded-xl bg-green-500 text-white font-black hover:bg-green-600 shadow-lg shadow-green-100">Yes</button>
+                    </div>
+                     <button onclick="nextLiveStep(2)" class="w-full py-3 rounded-xl bg-slate-200 text-slate-600 font-bold">Back</button>
+                </div>
+
+                <div id="liveStepConfirm" class="live-step hidden">
+                    <h3 class="text-center font-black text-blue-900 tracking-wider mb-2">Summary</h3>
+                    <div id="liveSummaryText" class="text-center text-sm text-slate-600 mb-6 bg-white p-4 rounded-xl border border-slate-100 shadow-sm font-mono"></div>
+                    <div class="flex gap-2">
+                        <button onclick="cancelLiveAB()" class="w-1/3 py-3 rounded-xl bg-white border border-slate-200 text-slate-500 font-bold">Cancel</button>
+                        <button onclick="confirmLiveAB()" class="w-2/3 py-3 rounded-xl bg-green-600 text-white font-bold hover:bg-green-700 shadow-lg">Confirm</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8">
+                <button onclick="finalizeLiveGame()" class="w-full py-3 rounded-xl bg-slate-800 text-white font-bold hover:bg-slate-900 shadow-lg transition">
+                    Finish Game
+                </button>
+            </div>
+        </div>
+
+        <!-- ADD DATA PAGE -->
+        <div id="addDataPage" class="page-view hidden max-w-lg mx-auto space-y-8">
+            <div class="stats-card min-h-[500px] flex flex-col">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 id="formHeader" class="text-xl font-bold">Manual Entry</h2>
+                    <span id="stepIndicator" class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded">Step 1 of 13</span>
+                </div>
+                <form id="statsForm" class="flex-grow flex flex-col justify-between">
+                    <div id="step1" class="step-content space-y-4">
+                        <div><label class="block text-xs font-bold text-slate-500 uppercase mb-1">Date</label><input type="date" id="formDate" required class="w-full rounded-lg border border-slate-200 p-3 outline-none focus:ring-2 focus:ring-blue-500"></div>
+                        <div><label class="block text-xs font-bold text-slate-500 uppercase mb-1">Opponent</label><input type="text" id="formOpponent" placeholder="Team Name" class="w-full rounded-lg border border-slate-200 p-3 outline-none focus:ring-2 focus:ring-blue-500"></div>
                     </div>
                     
-                    <div class="bg-blue-900 rounded-xl p-4 text-white grid grid-cols-4 gap-2 text-center mb-2 shadow-lg">
-                        <div><p class="text-[10px] opacity-60 uppercase">AB</p><p id="liveABDisplay" class="text-2xl font-black">0</p></div>
-                        <div><p class="text-[10px] opacity-60 uppercase">H</p><p id="liveHDisplay" class="text-2xl font-black">0</p></div>
-                        <div><p class="text-[10px] opacity-60 uppercase">RBI</p><p id="liveRBIDisplay" class="text-2xl font-black">0</p></div>
-                        <div><p class="text-[10px] opacity-60 uppercase">R</p><p id="liveRDisplay" class="text-2xl font-black">0</p></div>
-                    </div>
-                </div>
-
-                <h2 id="currentAB" class="text-center font-black text-slate-400">At-bat</h2>
-                <div id="liveKeypad" class="grid grid-cols-2 gap-3 mb-6 transition-all duration-300">
-                    <button onclick="handleLiveResult('1B')" class="ab-btn hit-btn">1B</button>
-                    <button onclick="handleLiveResult('2B')" class="ab-btn hit-btn">2B</button>
-                    <button onclick="handleLiveResult('3B')" class="ab-btn hit-btn">3B</button>
-                    <button onclick="handleLiveResult('HR')" class="ab-btn hit-btn bg-blue-600 text-white hover:bg-blue-700 border-none">HR</button>
-                    <button onclick="handleLiveResult('BB')" class="ab-btn walk-btn">BB</button>
-                    <button onclick="handleLiveResult('HBP')" class="ab-btn walk-btn">HBP</button>
-                    <button onclick="handleLiveResult('SO')" class="ab-btn out-btn">SO</button>
-                    <button onclick="handleLiveResult('O')" class="ab-btn out-btn">O</button>
-                </div>
-
-                <div id="liveABContext" class="hidden stats-card bg-slate-50 border border-slate-200 mb-6">
-                    <div id="liveStepRBI" class="live-step hidden">
-                        <h3 class="text-center font-black text-blue-900 tracking-wider mb-4">RBI</h3>
-                        <div class="flex items-center justify-center gap-6 mb-6">
-                            <button onclick="adjustLiveContext('RBI', -1)" class="stepper-btn bg-white border border-slate-200">-</button>
-                            <span id="liveContextRBI" class="text-3xl font-black text-slate-800">0</span>
-                            <button onclick="adjustLiveContext('RBI', 1)" class="stepper-btn bg-white border border-slate-200">+</button>
-                        </div>
-                        <div class="flex gap-2">
-                             <button onclick="cancelLiveAB()" class="w-1/3 py-3 rounded-xl bg-slate-200 text-slate-600 font-bold">Cancel</button>
-                             <button onclick="nextLiveStep(2)" class="w-2/3 py-3 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-lg">Next</button>
-                        </div>
+                    <div id="stepperContainer">
+                       <div id="step2" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">At Bats (AB)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('AB', -1)" class="stepper-btn">-</button><input type="number" id="AB" value="0" readonly class="text-5xl font-black w-24 text-center outline-none bg-transparent"><button type="button" onclick="stepVal('AB', 1)" class="stepper-btn">+</button></div></div>
+                       <div id="step3" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Singles (1B)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('1B', -1)" class="stepper-btn">-</button><input type="number" id="1B" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('1B', 1)" class="stepper-btn">+</button></div></div>
+                       <div id="step4" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Doubles (2B)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('2B', -1)" class="stepper-btn">-</button><input type="number" id="2B" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('2B', 1)" class="stepper-btn">+</button></div></div>
+                       <div id="step5" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Triples (3B)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('3B', -1)" class="stepper-btn">-</button><input type="number" id="3B" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('3B', 1)" class="stepper-btn">+</button></div></div>
+                       <div id="step6" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Home Runs (HR)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('HR', -1)" class="stepper-btn">-</button><input type="number" id="HR" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('HR', 1)" class="stepper-btn">+</button></div></div>
+                       <div id="step7" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Strikeouts (SO)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('SO', -1)" class="stepper-btn">-</button><input type="number" id="SO" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('SO', 1)" class="stepper-btn">+</button></div></div>
+                       <div id="step8" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Walks (BB)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('BB', -1)" class="stepper-btn">-</button><input type="number" id="BB" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('BB', 1)" class="stepper-btn">+</button></div></div>
+                       <div id="step9" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Hit By Pitch (HBP)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('HBP', -1)" class="stepper-btn">-</button><input type="number" id="HBP" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('HBP', 1)" class="stepper-btn">+</button></div></div>
+                       <div id="step10" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Runs (R)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('R', -1)" class="stepper-btn">-</button><input type="number" id="R" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('R', 1)" class="stepper-btn">+</button></div></div>
+                       <div id="step11" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Runs Batted In (RBI)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('RBI', -1)" class="stepper-btn">-</button><input type="number" id="RBI" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('RBI', 1)" class="stepper-btn">+</button></div></div>
+                       <div id="step12" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Stolen Bases (SB)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('SB', -1)" class="stepper-btn">-</button><input type="number" id="SB" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('SB', 1)" class="stepper-btn">+</button></div></div>
+                       <div id="step13" class="step-content hidden">
+                            <div class="bg-blue-50 rounded-xl p-4 border border-blue-100 overflow-y-auto max-h-[300px]">
+                                <h3 class="text-[10px] font-black text-blue-800 uppercase mb-4 text-center">Summary Review</h3>
+                                <div id="fullReviewGrid" class="grid grid-cols-2 gap-y-3 gap-x-6 text-sm"></div>
+                                <div id="reviewCalculated" class="mt-6 pt-4 border-t border-blue-200"></div>
+                            </div>
+                       </div>
                     </div>
 
-                    <div id="liveStepSB" class="live-step hidden">
-                        <h3 class="text-center font-black text-blue-900 tracking-wider mb-4">SB</h3>
-                        <div class="flex items-center justify-center gap-6 mb-6">
-                            <button onclick="adjustLiveContext('SB', -1)" class="stepper-btn bg-white border border-slate-200">-</button>
-                            <span id="liveContextSB" class="text-3xl font-black text-slate-800">0</span>
-                            <button onclick="adjustLiveContext('SB', 1)" class="stepper-btn bg-white border border-slate-200">+</button>
-                        </div>
-                        <div class="flex gap-2">
-                             <button onclick="nextLiveStep(1)" class="w-1/3 py-3 rounded-xl bg-slate-200 text-slate-600 font-bold">Back</button>
-                             <button onclick="nextLiveStep(3)" class="w-2/3 py-3 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-lg">Next</button>
-                        </div>
+                    <div class="flex gap-2 pt-6">
+                        <button type="button" id="backBtn" onclick="prevStep()" class="hidden w-1/3 bg-slate-100 text-slate-600 font-bold py-3 rounded-xl">Back</button>
+                        <button type="button" id="nextBtn" onclick="handleNext()" class="flex-grow bg-blue-600 text-white font-bold py-3 rounded-xl shadow-lg">Next</button>
+                        <button type="submit" id="submitBtn" class="hidden flex-grow bg-green-600 text-white font-bold py-3 rounded-xl shadow-lg">Save Game</button>
                     </div>
-
-                    <div id="liveStepRun" class="live-step hidden">
-                        <h3 class="text-center font-black text-blue-900 tracking-wider mb-4">Scored?</h3>
-                        <div class="flex gap-4 mb-6">
-                            <button onclick="setLiveRun(false); nextLiveStep(4)" class="w-1/2 py-4 rounded-xl bg-slate-200 text-slate-600 font-black hover:bg-slate-300">No</button>
-                            <button onclick="setLiveRun(true); nextLiveStep(4)" class="w-1/2 py-4 rounded-xl bg-green-500 text-white font-black hover:bg-green-600 shadow-lg shadow-green-100">Yes</button>
-                        </div>
-                         <button onclick="nextLiveStep(2)" class="w-full py-3 rounded-xl bg-slate-200 text-slate-600 font-bold">Back</button>
-                    </div>
-
-                    <div id="liveStepConfirm" class="live-step hidden">
-                        <h3 class="text-center font-black text-blue-900 tracking-wider mb-2">Summary</h3>
-                        <div id="liveSummaryText" class="text-center text-sm text-slate-600 mb-6 bg-white p-4 rounded-xl border border-slate-100 shadow-sm font-mono"></div>
-                        <div class="flex gap-2">
-                            <button onclick="cancelLiveAB()" class="w-1/3 py-3 rounded-xl bg-white border border-slate-200 text-slate-500 font-bold">Cancel</button>
-                            <button onclick="confirmLiveAB()" class="w-2/3 py-3 rounded-xl bg-green-600 text-white font-bold hover:bg-green-700 shadow-lg">Confirm</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-8">
-                    <button onclick="finalizeLiveGame()" class="w-full py-3 rounded-xl bg-slate-800 text-white font-bold hover:bg-slate-900 shadow-lg transition">
-                        Finish Game
-                    </button>
-                </div>
+                </form>
             </div>
+        </div>
 
-            <!-- ADD DATA PAGE -->
-            <div id="addDataPage" class="page-view hidden max-w-lg mx-auto space-y-8">
-                <div class="stats-card min-h-[500px] flex flex-col">
-                    <div class="flex justify-between items-start mb-6">
-                        <h2 id="formHeader" class="text-xl font-bold">Manual Entry</h2>
-                        <span id="stepIndicator" class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded">Step 1 of 13</span>
-                    </div>
-                    <form id="statsForm" class="flex-grow flex flex-col justify-between">
-                        <div id="step1" class="step-content space-y-4">
-                            <div><label class="block text-xs font-bold text-slate-500 uppercase mb-1">Date</label><input type="date" id="formDate" required class="w-full rounded-lg border border-slate-200 p-3 outline-none focus:ring-2 focus:ring-blue-500"></div>
-                            <div><label class="block text-xs font-bold text-slate-500 uppercase mb-1">Opponent</label><input type="text" id="formOpponent" placeholder="Team Name" class="w-full rounded-lg border border-slate-200 p-3 outline-none focus:ring-2 focus:ring-blue-500"></div>
-                        </div>
-                        
-                        <div id="stepperContainer">
-                           <div id="step2" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">At Bats (AB)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('AB', -1)" class="stepper-btn">-</button><input type="number" id="AB" value="0" readonly class="text-5xl font-black w-24 text-center outline-none bg-transparent"><button type="button" onclick="stepVal('AB', 1)" class="stepper-btn">+</button></div></div>
-                           <div id="step3" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Singles (1B)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('1B', -1)" class="stepper-btn">-</button><input type="number" id="1B" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('1B', 1)" class="stepper-btn">+</button></div></div>
-                           <div id="step4" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Doubles (2B)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('2B', -1)" class="stepper-btn">-</button><input type="number" id="2B" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('2B', 1)" class="stepper-btn">+</button></div></div>
-                           <div id="step5" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Triples (3B)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('3B', -1)" class="stepper-btn">-</button><input type="number" id="3B" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('3B', 1)" class="stepper-btn">+</button></div></div>
-                           <div id="step6" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Home Runs (HR)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('HR', -1)" class="stepper-btn">-</button><input type="number" id="HR" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('HR', 1)" class="stepper-btn">+</button></div></div>
-                           <div id="step7" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Strikeouts (SO)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('SO', -1)" class="stepper-btn">-</button><input type="number" id="SO" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('SO', 1)" class="stepper-btn">+</button></div></div>
-                           <div id="step8" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Walks (BB)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('BB', -1)" class="stepper-btn">-</button><input type="number" id="BB" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('BB', 1)" class="stepper-btn">+</button></div></div>
-                           <div id="step9" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Hit By Pitch (HBP)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('HBP', -1)" class="stepper-btn">-</button><input type="number" id="HBP" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('HBP', 1)" class="stepper-btn">+</button></div></div>
-                           <div id="step10" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Runs (R)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('R', -1)" class="stepper-btn">-</button><input type="number" id="R" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('R', 1)" class="stepper-btn">+</button></div></div>
-                           <div id="step11" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Runs Batted In (RBI)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('RBI', -1)" class="stepper-btn">-</button><input type="number" id="RBI" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('RBI', 1)" class="stepper-btn">+</button></div></div>
-                           <div id="step12" class="step-content hidden text-center space-y-6"><p class="text-slate-500 text-sm font-medium">Stolen Bases (SB)?</p><div class="flex items-center justify-center gap-6"><button type="button" onclick="stepVal('SB', -1)" class="stepper-btn">-</button><input type="number" id="SB" value="0" readonly class="text-5xl font-black w-20 text-center bg-transparent"><button type="button" onclick="stepVal('SB', 1)" class="stepper-btn">+</button></div></div>
-                           <div id="step13" class="step-content hidden">
-                                <div class="bg-blue-50 rounded-xl p-4 border border-blue-100 overflow-y-auto max-h-[300px]">
-                                    <h3 class="text-[10px] font-black text-blue-800 uppercase mb-4 text-center">Summary Review</h3>
-                                    <div id="fullReviewGrid" class="grid grid-cols-2 gap-y-3 gap-x-6 text-sm"></div>
-                                    <div id="reviewCalculated" class="mt-6 pt-4 border-t border-blue-200"></div>
-                                </div>
-                           </div>
-                        </div>
-
-                        <div class="flex gap-2 pt-6">
-                            <button type="button" id="backBtn" onclick="prevStep()" class="hidden w-1/3 bg-slate-100 text-slate-600 font-bold py-3 rounded-xl">Back</button>
-                            <button type="button" id="nextBtn" onclick="handleNext()" class="flex-grow bg-blue-600 text-white font-bold py-3 rounded-xl shadow-lg">Next</button>
-                            <button type="submit" id="submitBtn" class="hidden flex-grow bg-green-600 text-white font-bold py-3 rounded-xl shadow-lg">Save Game</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- DATA MGMT PAGE -->
-            <div id="dataManagementPage" class="page-view hidden max-w-2xl mx-auto space-y-6">
-                 <div class="stats-card">
-                     <h3 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-4">Backup & Recovery</h3>
-                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                         <button onclick="exportData()" class="w-full bg-slate-800 text-white px-6 py-4 rounded-xl font-bold hover:bg-slate-900 transition flex flex-col items-center justify-center gap-1">
-                             <span>Export</span>
-                             <span class="text-[12px] opacity-60 font-normal">.csv</span>
-                         </button>
-                         
-                         <label class="w-full bg-white border-2 border-dashed border-slate-200 text-slate-600 px-6 py-4 rounded-xl font-bold hover:border-blue-400 hover:text-blue-600 transition cursor-pointer flex flex-col items-center justify-center gap-1">
-                             <input type="file" id="csvUpload" class="hidden" accept=".csv" onchange="importData(event)">
-                             <span>Import</span>
-                             <span class="text-[12px] opacity-60 font-normal">.csv</span>
-                         </label>
-                     </div>
+        <!-- DATA MGMT PAGE -->
+        <div id="dataManagementPage" class="page-view hidden max-w-2xl mx-auto space-y-6">
+             <div class="stats-card">
+                 <h3 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-4">Backup & Recovery</h3>
+                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                     <button onclick="exportData()" class="w-full bg-slate-800 text-white px-6 py-4 rounded-xl font-bold hover:bg-slate-900 transition flex flex-col items-center justify-center gap-1">
+                         <span>Export</span>
+                         <span class="text-[12px] opacity-60 font-normal">.csv</span>
+                     </button>
+                     
+                     <label class="w-full bg-white border-2 border-dashed border-slate-200 text-slate-600 px-6 py-4 rounded-xl font-bold hover:border-blue-400 hover:text-blue-600 transition cursor-pointer flex flex-col items-center justify-center gap-1">
+                         <input type="file" id="csvUpload" class="hidden" accept=".csv" onchange="importData(event)">
+                         <span>Import</span>
+                         <span class="text-[12px] opacity-60 font-normal">.csv</span>
+                     </label>
                  </div>
-                 <div class="stats-card border-l-4 border-red-500"><button onclick="clearAllData()" class="text-red-600 font-bold">Clear Site Data</button></div>
-            </div>
+             </div>
+             <div class="stats-card border-l-4 border-red-500"><button onclick="clearAllData()" class="text-red-600 font-bold">Clear Site Data</button></div>
+        </div>
 
-            <!-- GLOSSARY PAGE -->
-            <div id="glossaryPage" class="page-view hidden">
-                <div class="stats-card overflow-hidden">
-                    <h3 class="text-sm font-black text-blue-600 uppercase tracking-widest mb-6 px-2">Metric Reference Guide</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead class="bg-slate-50">
-                                <tr class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                    <th class="px-4 py-3 border-b">Key</th>
-                                    <th class="px-4 py-3 border-b">Value</th>
-                                    <th class="px-4 py-3 border-b">Formula / Logic</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-sm divide-y divide-slate-100">
-                                <tr>
-                                    <td class="px-4 py-3 font-bold text-blue-900">1B / 2B / 3B</td>
-                                    <td class="px-4 py-3 text-slate-700">Single / Double / Triple</td>
-                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">Batter hit the ball and reached base N (1-3) safely (even if thrown out at base N+1)</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-3 font-bold text-blue-900">HR</td>
-                                    <td class="px-4 py-3 text-slate-700">Home Run</td>
-                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">Batter hit the ball and reached home plate</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-3 font-bold text-blue-900">H</td>
-                                    <td class="px-4 py-3 text-slate-700">Hit</td>
-                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">1B | 2B | 3B | HR</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-3 font-bold text-blue-900">TB</td>
-                                    <td class="px-4 py-3 text-slate-700">Total Bases</td>
-                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">1B + 2B + 3B + HR</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-3 font-bold text-blue-900">BB</td>
-                                    <td class="px-4 py-3 text-slate-700">Walk</td>
-                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">Four balls & batter awarded first base</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-3 font-bold text-blue-900">HBP</td>
-                                    <td class="px-4 py-3 text-slate-700">Hit-by-pitch</td>
-                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">Batter struck by pitch (without swinging)</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-3 font-bold text-blue-900">SO</td>
-                                    <td class="px-4 py-3 text-slate-700">Strikeout</td>
-                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">Batter out on 3 strikes</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-3 font-bold text-blue-900">O</td>
-                                    <td class="px-4 py-3 text-slate-700">Out</td>
-                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">Batter retired by defense</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-3 font-bold text-blue-900">AB</td>
-                                    <td class="px-4 py-3 text-slate-700">At-bat</td>
-                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">H + O + SO</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-3 font-bold text-blue-900">R</td>
-                                    <td class="px-4 py-3 text-slate-700">Run</td>
-                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">Player scores</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-3 font-bold text-blue-900">RBI</td>
-                                    <td class="px-4 py-3 text-slate-700">Runs Batted In</td>
-                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">Teammate scores on batter's play</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-3 font-bold text-blue-900">AVG</td>
-                                    <td class="px-4 py-3 text-slate-700">Batting Average</td>
-                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">H / AB</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-3 font-bold text-blue-900">OBP</td>
-                                    <td class="px-4 py-3 text-slate-700">On-base Percentage</td>
-                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">(H + BB + HBP) / (AB + BB + HBP)</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-3 font-bold text-blue-900">SLG</td>
-                                    <td class="px-4 py-3 text-slate-700">Slugging Percentage</td>
-                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">(1B + 2*2B + 3*3B + 4*HR) / AB</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-3 font-bold text-blue-900">OPS</td>
-                                    <td class="px-4 py-3 text-slate-700">On-base Plus Slugging</td>
-                                    <td class="px-4 py-3 text-slate-500 font-mono text-xs">OBP + SLG</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+        <!-- GLOSSARY PAGE -->
+        <div id="glossaryPage" class="page-view hidden">
+            <div class="stats-card overflow-hidden">
+                <h3 class="text-sm font-black text-blue-600 uppercase tracking-widest mb-6 px-2">Metric Reference Guide</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-slate-50">
+                            <tr class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                <th class="px-4 py-3 border-b">Key</th>
+                                <th class="px-4 py-3 border-b">Value</th>
+                                <th class="px-4 py-3 border-b">Formula / Logic</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-sm divide-y divide-slate-100">
+                            <tr>
+                                <td class="px-4 py-3 font-bold text-blue-900">1B / 2B / 3B</td>
+                                <td class="px-4 py-3 text-slate-700">Single / Double / Triple</td>
+                                <td class="px-4 py-3 text-slate-500 font-mono text-xs">Batter hit the ball and reached base N (1-3) safely (even if thrown out at base N+1)</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-bold text-blue-900">HR</td>
+                                <td class="px-4 py-3 text-slate-700">Home Run</td>
+                                <td class="px-4 py-3 text-slate-500 font-mono text-xs">Batter hit the ball and reached home plate</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-bold text-blue-900">H</td>
+                                <td class="px-4 py-3 text-slate-700">Hit</td>
+                                <td class="px-4 py-3 text-slate-500 font-mono text-xs">1B | 2B | 3B | HR</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-bold text-blue-900">TB</td>
+                                <td class="px-4 py-3 text-slate-700">Total Bases</td>
+                                <td class="px-4 py-3 text-slate-500 font-mono text-xs">1B + 2B + 3B + HR</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-bold text-blue-900">BB</td>
+                                <td class="px-4 py-3 text-slate-700">Walk</td>
+                                <td class="px-4 py-3 text-slate-500 font-mono text-xs">Four balls & batter awarded first base</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-bold text-blue-900">HBP</td>
+                                <td class="px-4 py-3 text-slate-700">Hit-by-pitch</td>
+                                <td class="px-4 py-3 text-slate-500 font-mono text-xs">Batter struck by pitch (without swinging)</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-bold text-blue-900">SO</td>
+                                <td class="px-4 py-3 text-slate-700">Strikeout</td>
+                                <td class="px-4 py-3 text-slate-500 font-mono text-xs">Batter out on 3 strikes</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-bold text-blue-900">O</td>
+                                <td class="px-4 py-3 text-slate-700">Out</td>
+                                <td class="px-4 py-3 text-slate-500 font-mono text-xs">Batter retired by defense</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-bold text-blue-900">AB</td>
+                                <td class="px-4 py-3 text-slate-700">At-bat</td>
+                                <td class="px-4 py-3 text-slate-500 font-mono text-xs">H + O + SO</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-bold text-blue-900">R</td>
+                                <td class="px-4 py-3 text-slate-700">Run</td>
+                                <td class="px-4 py-3 text-slate-500 font-mono text-xs">Player scores</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-bold text-blue-900">RBI</td>
+                                <td class="px-4 py-3 text-slate-700">Runs Batted In</td>
+                                <td class="px-4 py-3 text-slate-500 font-mono text-xs">Teammate scores on batter's play</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-bold text-blue-900">AVG</td>
+                                <td class="px-4 py-3 text-slate-700">Batting Average</td>
+                                <td class="px-4 py-3 text-slate-500 font-mono text-xs">H / AB</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-bold text-blue-900">OBP</td>
+                                <td class="px-4 py-3 text-slate-700">On-base Percentage</td>
+                                <td class="px-4 py-3 text-slate-500 font-mono text-xs">(H + BB + HBP) / (AB + BB + HBP)</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-bold text-blue-900">SLG</td>
+                                <td class="px-4 py-3 text-slate-700">Slugging Percentage</td>
+                                <td class="px-4 py-3 text-slate-500 font-mono text-xs">(1B + 2*2B + 3*3B + 4*HR) / AB</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-bold text-blue-900">OPS</td>
+                                <td class="px-4 py-3 text-slate-700">On-base Plus Slugging</td>
+                                <td class="px-4 py-3 text-slate-500 font-mono text-xs">OBP + SLG</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </main>
-    </div>
+        </div>
+    </main>
+</div>
 
-    <script>
-        let gameData = [];
-        let trendChart, distributionChart, disciplineChart, productionChart;
-        let currentFormStep = 1;
-        const totalSteps = 13;
+<script>
+    let gameData = [];
+    let trendChart, distributionChart, disciplineChart, productionChart;
+    let currentFormStep = 1;
+    const totalSteps = 13;
+    
+    // Initial state with updated keys.
+    let liveGame = { '1B':0, '2B':0, '3B':0, 'HR':0, 'SO':0, 'BB':0, 'HBP':0, 'O':0, 'R':0, 'RBI':0, 'SB':0, 'AB':0, 'H':0 };
+    let currentABContext = null;
+
+    function toggleNav(open) {
+        document.getElementById('navSidebar').classList.toggle('active', open);
+        document.getElementById('overlay').classList.toggle('active', open);
+    }
+
+    function closeAllMenus() { toggleNav(false); }
+
+    function showPage(pageId) {
+        document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
+        document.getElementById(pageId + 'Page').classList.remove('hidden');
+        const titles = { dashboard: "Dashboard", liveGame: "Live Game", addData: "Previous Game", dataManagement: "Data", glossary: "Glossary" };
+        document.getElementById('pageTitle').textContent = titles[pageId] || "App";
         
-        // Initial state with updated keys.
-        let liveGame = { '1B':0, '2B':0, '3B':0, 'HR':0, 'SO':0, 'BB':0, 'HBP':0, 'O':0, 'R':0, 'RBI':0, 'SB':0, 'AB':0, 'H':0 };
-        let currentABContext = null;
+        if (pageId === 'liveGame') initLiveGame();
+        closeAllMenus();
+    }
 
-        function toggleNav(open) {
-            document.getElementById('navSidebar').classList.toggle('active', open);
-            document.getElementById('overlay').classList.toggle('active', open);
+    function switchDashTab(tabId) {
+        document.querySelectorAll('.dash-section').forEach(s => s.classList.add('hidden'));
+        document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(`dash-section-${tabId}`).classList.remove('hidden');
+        document.getElementById(`dash-tab-${tabId}`).classList.add('active');
+    }
+
+    function calculate() {
+        if (!gameData.length) {
+            ['avgDisplay','obpDisplay','slgDisplay','opsDisplay'].forEach(id => document.getElementById(id).textContent = '.000');
+            renderTable(); return;
         }
+        const totals = gameData.reduce((a, g) => {
+            a.AB += (g.AB || 0); 
+            a.H += (g.H || 0); 
+            a['1B'] += (g['1B'] || 0); 
+            a['2B'] += (g['2B'] || 0); 
+            a['3B'] += (g['3B'] || 0); 
+            a.HR += (g.HR || 0); 
+            a.SO += (g.SO || 0);
+            a.BB += (g.BB || 0); 
+            a.HBP += (g.HBP || 0);
+            a.R += (g.R || 0);
+            a.RBI += (g.RBI || 0);
+            return a;
+        }, { AB:0, H:0, '1B':0, '2B':0, '3B':0, HR:0, SO:0, BB:0, HBP:0, R:0, RBI:0 });
+        const tbb = totals.BB + totals.HBP;
+        const pa = totals.AB + tbb;
+        const tb = totals['1B'] + (totals['2B'] * 2) + (totals['3B'] * 3) + (totals.HR * 4);
+        const obp = pa > 0 ? ((totals.H + tbb) / pa) : 0;
+        const slg = totals.AB > 0 ? (tb / totals.AB) : 0;
+        const fmt = (v) => v.toFixed(3).replace(/^0/, '');
 
-        function closeAllMenus() { toggleNav(false); }
+        document.getElementById('avgDisplay').textContent = totals.AB > 0 ? fmt(totals.H / totals.AB) : ".000";
+        document.getElementById('obpDisplay').textContent = fmt(obp);
+        document.getElementById('slgDisplay').textContent = fmt(slg);
+        document.getElementById('opsDisplay').textContent = fmt(obp + slg);
 
-        function showPage(pageId) {
-            document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
-            document.getElementById(pageId + 'Page').classList.remove('hidden');
-            const titles = { dashboard: "Dashboard", liveGame: "Live Game", addData: "Previous Game", dataManagement: "Data", glossary: "Glossary" };
-            document.getElementById('pageTitle').textContent = titles[pageId] || "App";
-            
-            if (pageId === 'liveGame') initLiveGame();
-            closeAllMenus();
-        }
+        updateCharts(totals, tbb);
+        renderTable();
+        localStorage.setItem('deven.stat5.foo_v19', JSON.stringify(gameData));
+    }
 
-        function switchDashTab(tabId) {
-            document.querySelectorAll('.dash-section').forEach(s => s.classList.add('hidden'));
-            document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(`dash-section-${tabId}`).classList.remove('hidden');
-            document.getElementById(`dash-tab-${tabId}`).classList.add('active');
-        }
+    function updateCharts(totals, tbb) {
+        const sorted = [...gameData].sort((a,b) => new Date(a.Date) - new Date(b.Date));
 
-        function calculate() {
-            if (!gameData.length) {
-                ['avgDisplay','obpDisplay','slgDisplay','opsDisplay'].forEach(id => document.getElementById(id).textContent = '.000');
-                renderTable(); return;
+        // Trend Chart (AVG + OPS)
+        trendChart.data.labels = sorted.map(g => g.Date.split('-').slice(1).join('/'));
+
+        // Calculate rolling stats
+        let cAB = 0, cH = 0, cBB = 0, cHBP = 0, cTB = 0;
+        const avgData = [];
+        const obpData = [];
+        const slgData = [];
+        const opsData = [];
+
+        sorted.forEach(g => {
+            cAB += g.AB; cH += g.H; cBB += g.BB; cHBP += g.HBP;
+            const gTB = (g['1B'] + g['2B']*2 + g['3B']*3 + g.HR*4);
+            cTB += gTB;
+
+            const rollAvg = cAB > 0 ? cH/cAB : 0;
+            const rollObp = (cAB+cBB+cHBP) > 0 ? (cH+cBB+cHBP)/(cAB+cBB+cHBP) : 0;
+            const rollSlg = cAB > 0 ? cTB/cAB : 0;
+
+            avgData.push(rollAvg);
+            obpData.push(rollObp);
+            slgData.push(rollSlg);
+            opsData.push(rollObp + rollSlg);
+        });
+
+        //backgroundColor: ['#3b82f6','#f43f5e','#eab308','#22c55e'],
+        trendChart.data.datasets = [
+            {
+                label: 'AVG',
+                data: avgData,
+                borderColor: '#3b82f6', // blue-500
+                backgroundColor: 'rgba(59, 130, 246, 0.05)',
+                tension: 0.3,
+                yAxisID: 'y'
+            },
+            {
+                label: 'OBP',
+                data: obpData,
+                borderColor: '#ef4444', // red-500
+                //borderDash: [5, 5],
+                tension: 0.3,
+                //pointRadius: 0,
+                yAxisID: 'y'
+            },
+            {
+                label: 'SLG',
+                data: slgData,
+                borderColor: '#eab308', // yellow-500
+                //borderDash: [5, 5],
+                tension: 0.3,
+                //pointRadius: 0,
+                yAxisID: 'y'
+            },
+            {
+                label: 'OPS',
+                data: opsData,
+                borderColor: '#22c55e', // green-500
+                //borderDash: [5, 5],
+                tension: 0.3,
+                //pointRadius: 0,
+                yAxisID: 'y'
             }
-            const totals = gameData.reduce((a, g) => {
-                a.AB += (g.AB || 0); 
-                a.H += (g.H || 0); 
-                a['1B'] += (g['1B'] || 0); 
-                a['2B'] += (g['2B'] || 0); 
-                a['3B'] += (g['3B'] || 0); 
-                a.HR += (g.HR || 0); 
-                a.SO += (g.SO || 0);
-                a.BB += (g.BB || 0); 
-                a.HBP += (g.HBP || 0);
-                a.R += (g.R || 0);
-                a.RBI += (g.RBI || 0);
-                return a;
-            }, { AB:0, H:0, '1B':0, '2B':0, '3B':0, HR:0, SO:0, BB:0, HBP:0, R:0, RBI:0 });
-            const tbb = totals.BB + totals.HBP;
-            const pa = totals.AB + tbb;
-            const tb = totals['1B'] + (totals['2B'] * 2) + (totals['3B'] * 3) + (totals.HR * 4);
-            const obp = pa > 0 ? ((totals.H + tbb) / pa) : 0;
-            const slg = totals.AB > 0 ? (tb / totals.AB) : 0;
-            const fmt = (v) => v.toFixed(3).replace(/^0/, '');
+        ];
+        trendChart.update();
 
-            document.getElementById('avgDisplay').textContent = totals.AB > 0 ? fmt(totals.H / totals.AB) : ".000";
-            document.getElementById('obpDisplay').textContent = fmt(obp);
-            document.getElementById('slgDisplay').textContent = fmt(slg);
-            document.getElementById('opsDisplay').textContent = fmt(obp + slg);
+        // Distribution Chart
+        distributionChart.data.datasets[0].data = [totals['1B'], totals['2B'], totals['3B'], totals.HR];
+        distributionChart.update();
 
-            updateCharts(totals, tbb);
-            renderTable();
-            localStorage.setItem('deven.stat5.foo_v19', JSON.stringify(gameData));
-        }
+        // Discipline Chart
+        disciplineChart.data.datasets[0].data = [totals.SO, tbb];
+        disciplineChart.update();
 
-        function updateCharts(totals, tbb) {
-            const sorted = [...gameData].sort((a,b) => new Date(a.Date) - new Date(b.Date));
+        // Production Chart
+        productionChart.data.datasets[0].data = [totals.R, totals.RBI];
+        productionChart.update();
+    }
 
-            // Trend Chart (AVG + OPS)
-            trendChart.data.labels = sorted.map(g => g.Date.split('-').slice(1).join('/'));
+    function renderTable() {
+        const body = document.getElementById('statsTableBody');
+        body.innerHTML = [...gameData].sort((a,b) => new Date(b.Date) - new Date(a.Date)).map(g => `
+            <tr class="text-[11px] hover:bg-slate-50 transition">
+                <td class="px-4 py-4 font-bold text-slate-700">${g.Date}</td>
+                <td class="px-4 py-4 text-slate-500">${g.Opponent || '—'}</td>
+                <td class="px-2 py-4 text-center">${g.AB}</td>
+                <td class="px-2 py-4 text-center font-bold text-blue-600">${g.H}</td>
+                <td class="px-2 py-4 text-center">${g.BB}</td>
+                <td class="px-2 py-4 text-center text-slate-400 italic">${g.SO}</td>
+                <td class="px-2 py-4 text-center font-black">${g.AB > 0 ? (g.H/g.AB).toFixed(3).replace(/^0/,'') : '.000'}</td>
+                <td class="px-4 py-3 text-right"><button onclick="deleteGame('${g.ID}')" class="text-red-300 hover:text-red-500">×</button></td>
+            </tr>
+        `).join('');
+    }
 
-            // Calculate rolling stats
-            let cAB = 0, cH = 0, cBB = 0, cHBP = 0, cTB = 0;
-            const avgData = [];
-            const obpData = [];
-            const slgData = [];
-            const opsData = [];
-
-            sorted.forEach(g => {
-                cAB += g.AB; cH += g.H; cBB += g.BB; cHBP += g.HBP;
-                const gTB = (g['1B'] + g['2B']*2 + g['3B']*3 + g.HR*4);
-                cTB += gTB;
-
-                const rollAvg = cAB > 0 ? cH/cAB : 0;
-                const rollObp = (cAB+cBB+cHBP) > 0 ? (cH+cBB+cHBP)/(cAB+cBB+cHBP) : 0;
-                const rollSlg = cAB > 0 ? cTB/cAB : 0;
-
-                avgData.push(rollAvg);
-                obpData.push(rollObp);
-                slgData.push(rollSlg);
-                opsData.push(rollObp + rollSlg);
-            });
-
-            //backgroundColor: ['#3b82f6','#f43f5e','#eab308','#22c55e'],
-            trendChart.data.datasets = [
-                {
-                    label: 'AVG',
-                    data: avgData,
-                    borderColor: '#3b82f6', // blue-500
-                    backgroundColor: 'rgba(59, 130, 246, 0.05)',
-                    tension: 0.3,
-                    yAxisID: 'y'
-                },
-                {
-                    label: 'OBP',
-                    data: obpData,
-                    borderColor: '#ef4444', // red-500
-                    //borderDash: [5, 5],
-                    tension: 0.3,
-                    //pointRadius: 0,
-                    yAxisID: 'y'
-                },
-                {
-                    label: 'SLG',
-                    data: slgData,
-                    borderColor: '#eab308', // yellow-500
-                    //borderDash: [5, 5],
-                    tension: 0.3,
-                    //pointRadius: 0,
-                    yAxisID: 'y'
-                },
-                {
-                    label: 'OPS',
-                    data: opsData,
-                    borderColor: '#22c55e', // green-500
-                    //borderDash: [5, 5],
-                    tension: 0.3,
-                    //pointRadius: 0,
-                    yAxisID: 'y'
-                }
-            ];
-            trendChart.update();
-
-            // Distribution Chart
-            distributionChart.data.datasets[0].data = [totals['1B'], totals['2B'], totals['3B'], totals.HR];
-            distributionChart.update();
-
-            // Discipline Chart
-            disciplineChart.data.datasets[0].data = [totals.SO, tbb];
-            disciplineChart.update();
-
-            // Production Chart
-            productionChart.data.datasets[0].data = [totals.R, totals.RBI];
-            productionChart.update();
-        }
-
-        function renderTable() {
-            const body = document.getElementById('statsTableBody');
-            body.innerHTML = [...gameData].sort((a,b) => new Date(b.Date) - new Date(a.Date)).map(g => `
-                <tr class="text-[11px] hover:bg-slate-50 transition">
-                    <td class="px-4 py-4 font-bold text-slate-700">${g.Date}</td>
-                    <td class="px-4 py-4 text-slate-500">${g.Opponent || '—'}</td>
-                    <td class="px-2 py-4 text-center">${g.AB}</td>
-                    <td class="px-2 py-4 text-center font-bold text-blue-600">${g.H}</td>
-                    <td class="px-2 py-4 text-center">${g.BB}</td>
-                    <td class="px-2 py-4 text-center text-slate-400 italic">${g.SO}</td>
-                    <td class="px-2 py-4 text-center font-black">${g.AB > 0 ? (g.H/g.AB).toFixed(3).replace(/^0/,'') : '.000'}</td>
-                    <td class="px-4 py-3 text-right"><button onclick="deleteGame('${g.ID}')" class="text-red-300 hover:text-red-500">×</button></td>
-                </tr>
-            `).join('');
-        }
-
-        function deleteGame(id) {
-            if (confirm("Delete game?")) {
-                gameData = gameData.filter(g => String(g.ID) !== String(id));
-                calculate();
-            }
-        }
-
-        function clearAllData() {
-            if (confirm("Delete ALL site data? WARNING: It's recommended to export a .csv before continuing.")) {
-                gameData = [];
-                calculate();
-            }
-        }
-
-        function exportData() {
-            if (!gameData.length) return;
-            const headers = ["ID", "Date", "Opponent", "AB", "1B", "2B", "3B", "HR", "H", "SO", "BB", "R", "RBI", "SB", "HBP", "O"];
-            const rows = gameData.map(g => headers.map(h => JSON.stringify(g[h] || (['Opponent'].includes(h) ? "" : 0))).join(","));
-            const csv = [headers.join(","), ...rows].join("\n");
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `deven.stat5.foo-${new Date().toISOString().split('T')[0]}.csv`;
-            a.click();
-        }
-
-        function importData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const text = e.target.result;
-                const lines = text.split(/\r?\n/).filter(line => line.trim() !== "");
-                const headers = lines[0].split(",").map(h => h.replace(/['"]+/g, '').trim());
-                const imported = [];
-                for (let i = 1; i < lines.length; i++) {
-                    const values = lines[i].split(",").map(v => v.replace(/['"]+/g, '').trim());
-                    const entry = {};
-                    headers.forEach((h, idx) => {
-                        let val = values[idx];
-                        if (!isNaN(val) && val !== "" && h !== 'Date' && h !== 'Opponent') val = Number(val);
-                        entry[h] = val;
-                    });
-                    if (entry.Date) imported.push(entry);
-                }
-                const existingIds = new Set(gameData.map(g => String(g.ID)));
-                imported.forEach(entry => {
-                    if (!entry.ID || !existingIds.has(String(entry.ID))) {
-                        entry.ID = entry.ID || Date.now() + Math.random();
-                        gameData.push(entry);
-                    }
-                });
-                calculate(); alert("Import complete");
-                event.target.value = '';
-            };
-            reader.readAsText(file);
-        }
-
-        // Current Game
-        function initLiveGame() {
-            document.getElementById('liveDateDisplay').textContent = new Date().toLocaleDateString();
-            updateLiveUI();
-        }
-        function updateLiveUI() {
-            liveGame.H = liveGame['1B'] + liveGame['2B'] + liveGame['3B'] + liveGame.HR;
-            liveGame.AB = liveGame.H + liveGame.SO + liveGame.O;
-            document.getElementById('liveABDisplay').textContent = liveGame.AB;
-            document.getElementById('liveHDisplay').textContent = liveGame.H;
-            document.getElementById('liveRBIDisplay').textContent = liveGame.RBI;
-            document.getElementById('liveRDisplay').textContent = liveGame.R;
-        }
-        function handleLiveResult(type) {
-            currentABContext = { type: type, RBI: 0, SB: 0, R: 0 };
-            if (type === 'HR') {
-                currentABContext.RBI = 1;
-                currentABContext.R = 1;
-            }
-            document.getElementById('liveKeypad').classList.add('hidden');
-            document.getElementById('liveABContext').classList.remove('hidden');
-            showLiveStep(1);
-        }
-        function showLiveStep(step) {
-            document.querySelectorAll('.live-step').forEach(el => el.classList.add('hidden'));
-            if (step === 2 && !['1B', '2B', '3B', 'BB', 'HBP'].includes(currentABContext.type)) return showLiveStep(3);
-            if (step === 3 && (currentABContext.type === 'HR' || ['SO', 'O'].includes(currentABContext.type))) return showLiveStep(4);
-            const stepMap = { 1: 'liveStepRBI', 2: 'liveStepSB', 3: 'liveStepRun', 4: 'liveStepConfirm' };
-            document.getElementById(stepMap[step]).classList.remove('hidden');
-            if (step === 4) updateLiveSummary();
-        }
-        function nextLiveStep(targetStep) { showLiveStep(targetStep); }
-        function adjustLiveContext(field, delta) { 
-            currentABContext[field] = Math.max(0, currentABContext[field] + delta);
-            document.getElementById(field === 'RBI' ? 'liveContextRBI' : 'liveContextSB').textContent = currentABContext[field];
-        }
-        function setLiveRun(scored) { currentABContext.R = scored ? 1 : 0; }
-        function updateLiveSummary() {
-            document.getElementById('liveSummaryText').innerHTML = `
-                <div class="font-bold text-lg mb-2">${currentABContext.type}</div>
-                <div class="grid grid-cols-3 gap-2 text-xs font-bold text-slate-500">
-                    <div>RBI: ${currentABContext.RBI}</div>
-                    <div>SB: ${currentABContext.SB}</div>
-                    <div>Run: ${currentABContext.R ? 'YES' : 'NO'}</div>
-                </div>
-            `;
-        }
-        function cancelLiveAB() {
-            document.getElementById('liveABContext').classList.add('hidden');
-            document.getElementById('liveKeypad').classList.remove('hidden');
-        }
-        function confirmLiveAB() {
-            const type = currentABContext.type;
-            liveGame[type]++;
-            liveGame.RBI += currentABContext.RBI;
-            liveGame.SB += currentABContext.SB;
-            liveGame.R += currentABContext.R;
-            updateLiveUI();
-            cancelLiveAB();
-        }
-        function finalizeLiveGame() {
-            if (confirm("Save game data?")) {
-                const entry = { 
-                    ID: Date.now(), 
-                    Date: new Date().toISOString().split('T')[0], 
-                    Opponent: document.getElementById('liveOpponent').value, 
-                    ...liveGame 
-                };
-                gameData.push(entry);
-                calculate();
-                liveGame = { '1B':0, '2B':0, '3B':0, 'HR':0, 'SO':0, 'BB':0, 'HBP':0, 'O':0, 'R':0, 'RBI':0, 'SB':0, 'AB':0, 'H':0 };
-                showPage('dashboard');
-            }
-        }
-
-        // Previous Game
-        function stepVal(id, delta) {
-            const el = document.getElementById(id);
-            el.value = Math.max(0, (parseInt(el.value) || 0) + delta);
-        }
-        function handleNext() {
-            if (currentFormStep < totalSteps) {
-                currentFormStep++;
-                updateFormUI();
-            }
-        }
-        function prevStep() {
-            if (currentFormStep > 1) {
-                currentFormStep--;
-                updateFormUI();
-            }
-        }
-        function updateFormUI() {
-            document.getElementById('stepIndicator').textContent = `Step ${currentFormStep} of ${totalSteps}`;
-            document.querySelectorAll('.step-content').forEach((el, idx) => el.classList.toggle('hidden', (idx + 1) !== currentFormStep));
-            document.getElementById('backBtn').classList.toggle('hidden', currentFormStep === 1);
-            document.getElementById('nextBtn').classList.toggle('hidden', currentFormStep === totalSteps);
-            document.getElementById('submitBtn').classList.toggle('hidden', currentFormStep !== totalSteps);
-            if (currentFormStep === totalSteps) buildFullReview();
-        }
-        function buildFullReview() {
-            const fields = [
-                { l: 'AB', v: 'AB' }, { l: '1B', v: '1B' }, { l: '2B', v: '2B' }, { l: '3B', v: '3B' },
-                { l: 'HR', v: 'HR' }, { l: 'SO', v: 'SO' }, { l: 'BB', v: 'BB' }, { l: 'R', v: 'R' },
-                { l: 'RBI', v: 'RBI' }, { l: 'SB', v: 'SB' }
-            ];
-            document.getElementById('fullReviewGrid').innerHTML = fields.map(f => `
-                <div class="flex justify-between border-b border-blue-100 pb-1">
-                    <span class="text-blue-400 font-bold uppercase text-[10px]">${f.l}</span>
-                    <strong class="text-blue-900">${document.getElementById(f.v).value}</strong>
-                </div>
-            `).join('');
-
-            // Calculate review avg
-            const ab = parseInt(document.getElementById('AB').value) || 0;
-            const h = ['1B', '2B', '3B', 'HR'].reduce((s, id) => s + (parseInt(document.getElementById(id).value) || 0), 0);
-            const avg = ab > 0 ? (h/ab).toFixed(3).replace(/^0/,'') : '.000';
-            document.getElementById('reviewCalculated').innerHTML = `<div class="flex justify-between items-center"><span class="text-xs font-black text-blue-800 uppercase">Game AVG</span><span class="text-2xl font-black text-blue-600">${avg}</span></div>`;
-        }
-
-        document.getElementById('statsForm').onsubmit = (e) => {
-            e.preventDefault();
-            const getV = (id) => parseInt(document.getElementById(id).value) || 0;
-            const entry = {
-                ID: Date.now(), Date: document.getElementById('formDate').value, Opponent: document.getElementById('formOpponent').value,
-                AB: getV('AB'), '1B': getV('1B'), '2B': getV('2B'), '3B': getV('3B'), HR: getV('HR'),
-                H: getV('1B')+getV('2B')+getV('3B')+getV('HR'), SO: getV('SO'), BB: getV('BB'), R: getV('R'), RBI: getV('RBI'), SB: getV('SB'), HBP: getV('HBP'),
-                O: getV('AB') - (getV('1B')+getV('2B')+getV('3B')+getV('HR') + getV('SO')) // Derived Outs for manual entry
-            };
-            gameData.push(entry); calculate(); e.target.reset(); currentFormStep = 1; updateFormUI(); showPage('dashboard');
-        };
-
-        window.onload = () => {
-            document.getElementById('formDate').value = new Date().toISOString().split('T')[0];
-            // 1. Performance (Line)
-            const ctx1 = document.getElementById('performanceChart').getContext('2d');
-            trendChart = new Chart(ctx1, {
-                type:'line',
-                data: { labels:[], datasets:[] },
-                options: {
-                    responsive:true,
-                    maintainAspectRatio:false,
-                    plugins: { legend: { display:true, position:'bottom' } },
-                    scales:{ y: { beginAtZero: true, max: 2 }, x: { grid: { display: false } } } }
-            });
-
-            // 2. Distribution (Doughnut)
-            const ctx2 = document.getElementById('distributionChart').getContext('2d');
-            distributionChart = new Chart(ctx2, {
-                type: 'doughnut',
-                data: {
-                    labels: ['1B','2B','3B','HR'],
-                    datasets: [{
-                        data: [0,0,0,0],
-                        backgroundColor: ['#3b82f6','#f43f5e','#eab308','#22c55e'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom' } },
-                    cutout: '70%'
-                }
-            });
-
-            // 3. Discipline (Bar)
-            const ctx3 = document.getElementById('disciplineChart').getContext('2d');
-            disciplineChart = new Chart(ctx3, {
-                type: 'bar',
-                data: {
-                    labels: ['SO','BB+HBP'],
-                    datasets: [{
-                        data: [0,0],
-                        backgroundColor: ['#94a3b8','#3b82f6'],
-                        borderRadius: 8
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true }, x: { grid: { display: false } } }
-                }
-            });
-
-            // 4. Production (Bar)
-            const ctx4 = document.getElementById('productionChart').getContext('2d');
-            productionChart = new Chart(ctx4, {
-                type: 'bar',
-                data: {
-                    labels: ['R','RBI'],
-                    datasets: [{
-                        label: 'Total',
-                        data: [0, 0],
-                        backgroundColor: ['#10b981','#f59e0b'],
-                        borderRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true } }
-                }
-            });
-
-            const saved = localStorage.getItem('deven.stat5.foo_v19'); 
-            if (saved) gameData = JSON.parse(saved);
+    function deleteGame(id) {
+        if (confirm("Delete game?")) {
+            gameData = gameData.filter(g => String(g.ID) !== String(id));
             calculate();
+        }
+    }
+
+    function clearAllData() {
+        if (confirm("Delete ALL site data? WARNING: It's recommended to export a .csv before continuing.")) {
+            gameData = [];
+            calculate();
+        }
+    }
+
+    function exportData() {
+        if (!gameData.length) return;
+        const headers = ["ID", "Date", "Opponent", "AB", "1B", "2B", "3B", "HR", "H", "SO", "BB", "R", "RBI", "SB", "HBP", "O"];
+        const rows = gameData.map(g => headers.map(h => JSON.stringify(g[h] || (['Opponent'].includes(h) ? "" : 0))).join(","));
+        const csv = [headers.join(","), ...rows].join("\n");
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `deven.stat5.foo-${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+    }
+
+    function importData(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const text = e.target.result;
+            const lines = text.split(/\r?\n/).filter(line => line.trim() !== "");
+            const headers = lines[0].split(",").map(h => h.replace(/['"]+/g, '').trim());
+            const imported = [];
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(",").map(v => v.replace(/['"]+/g, '').trim());
+                const entry = {};
+                headers.forEach((h, idx) => {
+                    let val = values[idx];
+                    if (!isNaN(val) && val !== "" && h !== 'Date' && h !== 'Opponent') val = Number(val);
+                    entry[h] = val;
+                });
+                if (entry.Date) imported.push(entry);
+            }
+            const existingIds = new Set(gameData.map(g => String(g.ID)));
+            imported.forEach(entry => {
+                if (!entry.ID || !existingIds.has(String(entry.ID))) {
+                    entry.ID = entry.ID || Date.now() + Math.random();
+                    gameData.push(entry);
+                }
+            });
+            calculate(); alert("Import complete");
+            event.target.value = '';
         };
-    </script>
-</body>
-</html>
+        reader.readAsText(file);
+    }
+
+    // Current Game
+    function initLiveGame() {
+        document.getElementById('liveDateDisplay').textContent = new Date().toLocaleDateString();
+        updateLiveUI();
+    }
+    function updateLiveUI() {
+        liveGame.H = liveGame['1B'] + liveGame['2B'] + liveGame['3B'] + liveGame.HR;
+        liveGame.AB = liveGame.H + liveGame.SO + liveGame.O;
+        document.getElementById('liveABDisplay').textContent = liveGame.AB;
+        document.getElementById('liveHDisplay').textContent = liveGame.H;
+        document.getElementById('liveRBIDisplay').textContent = liveGame.RBI;
+        document.getElementById('liveRDisplay').textContent = liveGame.R;
+    }
+    function handleLiveResult(type) {
+        currentABContext = { type: type, RBI: 0, SB: 0, R: 0 };
+        if (type === 'HR') {
+            currentABContext.RBI = 1;
+            currentABContext.R = 1;
+        }
+        document.getElementById('liveKeypad').classList.add('hidden');
+        document.getElementById('liveABContext').classList.remove('hidden');
+        showLiveStep(1);
+    }
+    function showLiveStep(step) {
+        document.querySelectorAll('.live-step').forEach(el => el.classList.add('hidden'));
+        if (step === 2 && !['1B', '2B', '3B', 'BB', 'HBP'].includes(currentABContext.type)) return showLiveStep(3);
+        if (step === 3 && (currentABContext.type === 'HR' || ['SO', 'O'].includes(currentABContext.type))) return showLiveStep(4);
+        const stepMap = { 1: 'liveStepRBI', 2: 'liveStepSB', 3: 'liveStepRun', 4: 'liveStepConfirm' };
+        document.getElementById(stepMap[step]).classList.remove('hidden');
+        if (step === 4) updateLiveSummary();
+    }
+    function nextLiveStep(targetStep) { showLiveStep(targetStep); }
+    function adjustLiveContext(field, delta) { 
+        currentABContext[field] = Math.max(0, currentABContext[field] + delta);
+        document.getElementById(field === 'RBI' ? 'liveContextRBI' : 'liveContextSB').textContent = currentABContext[field];
+    }
+    function setLiveRun(scored) { currentABContext.R = scored ? 1 : 0; }
+    function updateLiveSummary() {
+        document.getElementById('liveSummaryText').innerHTML = `
+            <div class="font-bold text-lg mb-2">${currentABContext.type}</div>
+            <div class="grid grid-cols-3 gap-2 text-xs font-bold text-slate-500">
+                <div>RBI: ${currentABContext.RBI}</div>
+                <div>SB: ${currentABContext.SB}</div>
+                <div>Run: ${currentABContext.R ? 'YES' : 'NO'}</div>
+            </div>
+        `;
+    }
+    function cancelLiveAB() {
+        document.getElementById('liveABContext').classList.add('hidden');
+        document.getElementById('liveKeypad').classList.remove('hidden');
+    }
+    function confirmLiveAB() {
+        const type = currentABContext.type;
+        liveGame[type]++;
+        liveGame.RBI += currentABContext.RBI;
+        liveGame.SB += currentABContext.SB;
+        liveGame.R += currentABContext.R;
+        updateLiveUI();
+        cancelLiveAB();
+    }
+    function finalizeLiveGame() {
+        if (confirm("Save game data?")) {
+            const entry = { 
+                ID: Date.now(), 
+                Date: new Date().toISOString().split('T')[0], 
+                Opponent: document.getElementById('liveOpponent').value, 
+                ...liveGame 
+            };
+            gameData.push(entry);
+            calculate();
+            liveGame = { '1B':0, '2B':0, '3B':0, 'HR':0, 'SO':0, 'BB':0, 'HBP':0, 'O':0, 'R':0, 'RBI':0, 'SB':0, 'AB':0, 'H':0 };
+            showPage('dashboard');
+        }
+    }
+
+    // Previous Game
+    function stepVal(id, delta) {
+        const el = document.getElementById(id);
+        el.value = Math.max(0, (parseInt(el.value) || 0) + delta);
+    }
+    function handleNext() {
+        if (currentFormStep < totalSteps) {
+            currentFormStep++;
+            updateFormUI();
+        }
+    }
+    function prevStep() {
+        if (currentFormStep > 1) {
+            currentFormStep--;
+            updateFormUI();
+        }
+    }
+    function updateFormUI() {
+        document.getElementById('stepIndicator').textContent = `Step ${currentFormStep} of ${totalSteps}`;
+        document.querySelectorAll('.step-content').forEach((el, idx) => el.classList.toggle('hidden', (idx + 1) !== currentFormStep));
+        document.getElementById('backBtn').classList.toggle('hidden', currentFormStep === 1);
+        document.getElementById('nextBtn').classList.toggle('hidden', currentFormStep === totalSteps);
+        document.getElementById('submitBtn').classList.toggle('hidden', currentFormStep !== totalSteps);
+        if (currentFormStep === totalSteps) buildFullReview();
+    }
+    function buildFullReview() {
+        const fields = [
+            { l: 'AB', v: 'AB' }, { l: '1B', v: '1B' }, { l: '2B', v: '2B' }, { l: '3B', v: '3B' },
+            { l: 'HR', v: 'HR' }, { l: 'SO', v: 'SO' }, { l: 'BB', v: 'BB' }, { l: 'R', v: 'R' },
+            { l: 'RBI', v: 'RBI' }, { l: 'SB', v: 'SB' }
+        ];
+        document.getElementById('fullReviewGrid').innerHTML = fields.map(f => `
+            <div class="flex justify-between border-b border-blue-100 pb-1">
+                <span class="text-blue-400 font-bold uppercase text-[10px]">${f.l}</span>
+                <strong class="text-blue-900">${document.getElementById(f.v).value}</strong>
+            </div>
+        `).join('');
+
+        // Calculate review avg
+        const ab = parseInt(document.getElementById('AB').value) || 0;
+        const h = ['1B', '2B', '3B', 'HR'].reduce((s, id) => s + (parseInt(document.getElementById(id).value) || 0), 0);
+        const avg = ab > 0 ? (h/ab).toFixed(3).replace(/^0/,'') : '.000';
+        document.getElementById('reviewCalculated').innerHTML = `<div class="flex justify-between items-center"><span class="text-xs font-black text-blue-800 uppercase">Game AVG</span><span class="text-2xl font-black text-blue-600">${avg}</span></div>`;
+    }
+
+    document.getElementById('statsForm').onsubmit = (e) => {
+        e.preventDefault();
+        const getV = (id) => parseInt(document.getElementById(id).value) || 0;
+        const entry = {
+            ID: Date.now(), Date: document.getElementById('formDate').value, Opponent: document.getElementById('formOpponent').value,
+            AB: getV('AB'), '1B': getV('1B'), '2B': getV('2B'), '3B': getV('3B'), HR: getV('HR'),
+            H: getV('1B')+getV('2B')+getV('3B')+getV('HR'), SO: getV('SO'), BB: getV('BB'), R: getV('R'), RBI: getV('RBI'), SB: getV('SB'), HBP: getV('HBP'),
+            O: getV('AB') - (getV('1B')+getV('2B')+getV('3B')+getV('HR') + getV('SO')) // Derived Outs for manual entry
+        };
+        gameData.push(entry); calculate(); e.target.reset(); currentFormStep = 1; updateFormUI(); showPage('dashboard');
+    };
+
+    window.onload = () => {
+        document.getElementById('formDate').value = new Date().toISOString().split('T')[0];
+        // 1. Performance (Line)
+        const ctx1 = document.getElementById('performanceChart').getContext('2d');
+        trendChart = new Chart(ctx1, {
+            type:'line',
+            data: { labels:[], datasets:[] },
+            options: {
+                responsive:true,
+                maintainAspectRatio:false,
+                plugins: { legend: { display:true, position:'bottom' } },
+                scales:{ y: { beginAtZero: true, max: 2 }, x: { grid: { display: false } } } }
+        });
+
+        // 2. Distribution (Doughnut)
+        const ctx2 = document.getElementById('distributionChart').getContext('2d');
+        distributionChart = new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['1B','2B','3B','HR'],
+                datasets: [{
+                    data: [0,0,0,0],
+                    backgroundColor: ['#3b82f6','#f43f5e','#eab308','#22c55e'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom' } },
+                cutout: '70%'
+            }
+        });
+
+        // 3. Discipline (Bar)
+        const ctx3 = document.getElementById('disciplineChart').getContext('2d');
+        disciplineChart = new Chart(ctx3, {
+            type: 'bar',
+            data: {
+                labels: ['SO','BB+HBP'],
+                datasets: [{
+                    data: [0,0],
+                    backgroundColor: ['#94a3b8','#3b82f6'],
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true }, x: { grid: { display: false } } }
+            }
+        });
+
+        // 4. Production (Bar)
+        const ctx4 = document.getElementById('productionChart').getContext('2d');
+        productionChart = new Chart(ctx4, {
+            type: 'bar',
+            data: {
+                labels: ['R','RBI'],
+                datasets: [{
+                    label: 'Total',
+                    data: [0, 0],
+                    backgroundColor: ['#10b981','#f59e0b'],
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+
+        const saved = localStorage.getItem('deven.stat5.foo_v19'); 
+        if (saved) gameData = JSON.parse(saved);
+        calculate();
+    };
+</script>
