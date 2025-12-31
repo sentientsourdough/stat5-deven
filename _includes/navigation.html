@@ -1,0 +1,20 @@
+<div id="overlay" onclick="closeAllMenus()" class="fixed inset-0 bg-slate-900/50 z-[60]"></div>
+
+<!-- Navigation Sidebar -->
+<aside id="navSidebar" class="fixed top-0 left-0 h-full w-64 bg-white z-[70] shadow-2xl p-6">
+    <div class="flex items-center justify-between mb-8">
+        <h2 class="text-lg font-black text-blue-900 tracking-tight">Menu</h2>
+        <button onclick="toggleNav(false)" class="p-2 hover:bg-slate-100 rounded-full transition">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+    </div>
+    <nav class="flex flex-col gap-2">
+        <button onclick="showPage('dashboard')" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition text-left">Dashboard</button>
+        <button onclick="showPage('liveGame')" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition text-left">
+            <span class="text-red-500 mr-1">●</span> Live Game
+        </button>
+        <button onclick="showPage('addData')" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition text-left">Previous Game</button>
+        <button onclick="showPage('dataManagement')" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition text-left">Site Data</button>
+        <button onclick="showPage('glossary')" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition text-left">Glossary</button>
+    </nav>
+</aside>

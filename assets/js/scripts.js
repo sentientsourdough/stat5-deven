@@ -17,7 +17,7 @@ function closeAllMenus() { toggleNav(false); }
 function showPage(pageId) {
     document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
     document.getElementById(pageId + 'Page').classList.remove('hidden');
-    const titles = { dashboard: "Dashboard", liveGame: "Live Game", addData: "Previous Game", dataManagement: "Data", glossary: "Glossary" };
+    const titles = { dashboard: "Dashboard", liveGame: "Live Game", addData: "Previous Game", dataManagement: "Site Data", glossary: "Glossary" };
     document.getElementById('pageTitle').textContent = titles[pageId] || "App";
     
     if (pageId === 'liveGame') initLiveGame();
@@ -102,16 +102,16 @@ function updateCharts(totals, tbb) {
             data: avgData,
             borderColor: '#3b82f6', // blue-500
             backgroundColor: 'rgba(59, 130, 246, 0.05)',
+            borderDash: [5, 5],
             tension: 0.3,
+            pointRadius: 0,
             yAxisID: 'y'
         },
         {
             label: 'OBP',
             data: obpData,
             borderColor: '#ef4444', // red-500
-            //borderDash: [5, 5],
             tension: 0.3,
-            //pointRadius: 0,
             yAxisID: 'y'
         },
         {
@@ -172,7 +172,7 @@ function deleteGame(id) {
 }
 
 function clearAllData() {
-    if (confirm("Delete ALL site data? WARNING: It's recommended to export a .csv before continuing.")) {
+    if (confirm("Warning: This will delete ALL site data. Before continuing, it's recommended to save your game data 'Site Data' -> 'Backup & Recovery' -> 'Export .CSV'.")) {
         gameData = [];
         calculate();
     }

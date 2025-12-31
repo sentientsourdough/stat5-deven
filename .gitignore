@@ -16,10 +16,7 @@ thumbs.db
 # Backup files
 *.orig
 *.bak
-*.old
-*.new
 *.swp
 
-TODO.txt
-
+# Work directory.
 .work/

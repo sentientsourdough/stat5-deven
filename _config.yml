@@ -1,4 +1,4 @@
-title: Baseball Stats
+title: Stat5
 description: Advanced performance tracking for baseball athletes.
 baseurl: ""
 url: "https://sentientsourdough.github.io"
@@ -13,4 +13,4 @@ exclude:
   - .gitignore
   - node_modules
   - vendor
-  - TODO.txt
+  - .work/
